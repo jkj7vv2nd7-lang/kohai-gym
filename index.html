@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>アホの子AI・後輩育成ジム｜教えて育てる受験トレーニング</title>
+<meta name="description" content="偏差値35の後輩マナブに5教科・全84レッスンを教えて覚醒させる、先輩体験型の受験対策アプリ。教えることが一番の勉強になる！">
+<meta property="og:title" content="アホの子AI・後輩育成ジム">
+<meta property="og:description" content="後輩に教えたら、自分が強くなった。5教科・25ステージ・全84レッスンの育成トレーニング。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jkj7vv2nd7-lang.github.io/kohai-gym/">
+<meta property="og:image" content="https://jkj7vv2nd7-lang.github.io/kohai-gym/og-image.png">
+<link rel="icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{
+  --ink:#262036; --paper:#fdf8ec; --paper2:#fffdf6;
+  --indigo:#4f46e5; --indigo2:#6366f1; --violet:#7c3aed;
+  --gold:#e8a33d; --gold2:#f5c542; --orange:#f97316;
+  --red:#dc2626; --teal:#0d9488;
+  --shadow:0 4px 14px rgba(38,32,54,.16);
+  --subj-english:#4f46e5; --subj-math:#2563eb; --subj-japanese:#e11d48;
+  --subj-science:#059669; --subj-social:#d97706;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+  background:#1d1830 radial-gradient(circle at 15% 0%, #43307a 0%, transparent 55%),
+             radial-gradient(circle at 90% 100%, #6b3410 0%, transparent 50%);
+  color:var(--ink); min-height:100vh;
+}
+#app{max-width:560px;margin:0 auto;min-height:100vh;background:var(--paper);
+  box-shadow:0 0 40px rgba(0,0,0,.45); position:relative; overflow:hidden;
+  display:flex; flex-direction:column;}
+.screen{display:none; flex-direction:column; flex:1; min-height:0;}
+.screen.active{display:flex;}
+button{font-family:inherit; cursor:pointer;}
+.btn{
+  border:none; border-radius:999px; padding:14px 22px; font-size:17px; font-weight:800;
+  background:linear-gradient(180deg,var(--indigo2),var(--indigo)); color:#fff;
+  box-shadow:0 4px 0 #312e81, var(--shadow); transition:transform .06s, box-shadow .06s;
+}
+.btn:active{transform:translateY(3px); box-shadow:0 1px 0 #312e81;}
+.btn.sub{background:linear-gradient(180deg,#fdfdfd,#eae4cf); color:var(--ink); box-shadow:0 4px 0 #b3a888, var(--shadow);}
+.btn.sub:active{box-shadow:0 1px 0 #b3a888;}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold)); color:#4a2f00; box-shadow:0 4px 0 #a96f14, var(--shadow);}
+.btn.gold:active{box-shadow:0 1px 0 #a96f14;}
+.btn:disabled{opacity:.45; pointer-events:none;}
+.btn.big{font-size:20px; padding:16px 30px; width:100%;}
+.sound-toggle{
+  border:2px solid var(--ink); background:#fff; border-radius:999px; padding:6px 14px;
+  font-size:14px; font-weight:800;
+}
+.topbar{
+  display:flex; align-items:center; gap:8px; padding:10px 14px;
+  background:var(--paper2); border-bottom:2px solid #e7ddc2; position:sticky; top:0; z-index:5;
+}
+.topbar .tb-title{font-weight:900; font-size:15px; flex:1; line-height:1.3;}
+.back-btn{
+  border:2px solid var(--ink); background:#fff; border-radius:999px; padding:6px 13px;
+  font-size:13.5px; font-weight:800;
+}
+/* ---------- タイトル ---------- */
+#screen-title{align-items:center; text-align:center; padding:30px 18px 16px;
+  background:linear-gradient(180deg,#ffe9a8 0%, var(--paper) 58%);}
+.title-band{
+  background:linear-gradient(90deg,var(--violet),var(--indigo)); color:#fff; font-weight:900;
+  letter-spacing:.3em; padding:6px 16px 6px calc(16px + .3em); border-radius:4px; font-size:13.5px;
+  box-shadow:var(--shadow);
+}
+h1.logo{margin:14px 0 2px; font-size:40px; line-height:1.2; font-weight:900; color:var(--ink);}
+h1.logo .accent{color:var(--violet);}
+.title-sub{font-size:15px; font-weight:700; color:#5c5470; margin:6px 0 2px; line-height:1.6;}
+.title-avatar{margin:14px 0 4px; position:relative; width:170px; height:170px;}
+.title-stats{
+  display:flex; gap:10px; justify-content:center; margin:12px 0 4px; flex-wrap:wrap;
+}
+.stat-chip{
+  background:#fff; border:2px solid #e2d7b8; border-radius:14px; padding:8px 14px;
+  font-size:13px; font-weight:800; box-shadow:var(--shadow);
+}
+.stat-chip b{font-size:19px; color:var(--violet);}
+.title-btns{display:flex; flex-direction:column; gap:12px; width:100%; max-width:340px; margin-top:16px;}
+.title-foot{margin-top:auto; padding:18px 0 4px; font-size:12px; color:#8a8171; line-height:1.7;}
+.linklike{background:none;border:none;color:var(--indigo);font-weight:800;font-size:12.5px;text-decoration:underline;padding:2px;}
+/* ---------- ステータスカード ---------- */
+.status-card{
+  margin:12px 14px 4px; background:linear-gradient(135deg,#312e81,#4f46e5 60%,#7c3aed);
+  color:#fff; border-radius:18px; padding:14px 16px; box-shadow:var(--shadow);
+  display:flex; gap:14px; align-items:center;
+}
+.status-card .sc-avatar{width:76px; height:76px; flex:none; background:#fff; border-radius:50%; padding:4px;}
+.status-card .sc-main{flex:1; min-width:0;}
+.status-card .sc-dev{font-size:13px; font-weight:800; opacity:.9;}
+.status-card .sc-dev b{font-size:32px; line-height:1; margin-left:4px;}
+.rank-badge{
+  display:inline-block; background:var(--gold2); color:#4a2f00; font-weight:900;
+  font-size:12.5px; border-radius:999px; padding:3px 12px; margin-top:5px;
+}
+.status-card .sc-row{font-size:13px; font-weight:700; margin-top:7px; display:flex; gap:14px; flex-wrap:wrap;}
+.progress-track{height:9px; background:rgba(255,255,255,.28); border-radius:99px; margin-top:8px; overflow:hidden;}
+.progress-fill{height:100%; background:linear-gradient(90deg,var(--gold2),var(--orange)); border-radius:99px; transition:width .5s;}
+/* ---------- マップ ---------- */
+.subj-tabs{display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding:12px 14px 4px;}
+.subj-tab{
+  border:2px solid #ddd2ae; background:#fff; border-radius:14px; padding:9px 2px 7px;
+  font-size:14px; font-weight:900; color:var(--ink); line-height:1.25;
+}
+.subj-tab small{display:block; font-size:10.5px; font-weight:700; color:#8a8171;}
+.subj-tab.active{color:#fff; border-color:transparent;}
+.subj-tab.active small{color:rgba(255,255,255,.85);}
+.subj-tab[data-subj="english"].active{background:var(--subj-english);}
+.subj-tab[data-subj="math"].active{background:var(--subj-math);}
+.subj-tab[data-subj="japanese"].active{background:var(--subj-japanese);}
+.subj-tab[data-subj="science"].active{background:var(--subj-science);}
+.subj-tab[data-subj="social"].active{background:var(--subj-social);}
+.course-bar{display:flex; gap:6px; flex-wrap:wrap; padding:10px 14px 2px; align-items:center;}
+.course-bar .cb-label{font-size:11.5px; font-weight:800; color:#8a8171;}
+.course-chip{
+  border:2px solid #ddd2ae; background:#fff; border-radius:999px; padding:6px 12px;
+  font-size:12.5px; font-weight:800; color:var(--ink);
+}
+.course-chip.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+.stages{padding:10px 14px 22px; display:flex; flex-direction:column; gap:12px; overflow-y:auto;}
+.stage-card{
+  background:var(--paper2); border:2px solid #e7ddc2; border-left:8px solid var(--gold);
+  border-radius:16px; padding:13px 15px; box-shadow:var(--shadow); text-align:left; width:100%;
+}
+.stage-card[data-subj="english"]{border-left-color:var(--subj-english);}
+.stage-card[data-subj="math"]{border-left-color:var(--subj-math);}
+.stage-card[data-subj="japanese"]{border-left-color:var(--subj-japanese);}
+.stage-card[data-subj="science"]{border-left-color:var(--subj-science);}
+.stage-card[data-subj="social"]{border-left-color:var(--subj-social);}
+.stage-card .st-head{display:flex; align-items:baseline; gap:8px;}
+.stage-card .st-id{font-size:12px; font-weight:900; color:#fff; background:var(--ink); border-radius:6px; padding:2px 8px;}
+.stage-card .st-level{margin-left:auto; font-size:11px; font-weight:800; color:#7a7260; background:#f3ecd4; border-radius:999px; padding:3px 9px; white-space:nowrap;}
+.stage-card .st-title{display:block; font-size:16.5px; font-weight:900; line-height:1.4; margin-top:6px;}
+.stage-card .st-kohai{font-size:12.5px; color:#6b6280; font-weight:700; margin-top:3px; line-height:1.5;}
+.stage-card .st-prog{display:flex; align-items:center; gap:9px; margin-top:9px;}
+.stage-card .st-prog .progress-track{flex:1; background:#eee5c8; margin:0;}
+.stage-card .st-prog .progress-fill{background:linear-gradient(90deg,var(--gold2),var(--orange));}
+.stage-card .st-count{font-size:12.5px; font-weight:900; white-space:nowrap;}
+.stage-card .st-clear{
+  font-size:12px; font-weight:900; color:#fff; background:var(--teal); border-radius:999px; padding:3px 10px;
+}
+.empty-note{padding:26px 10px; text-align:center; color:#8a8171; font-weight:700; font-size:14px; line-height:1.7;}
+/* ---------- ステージ紹介 ---------- */
+#screen-intro{padding:0 0 24px;}
+.intro-body{padding:16px 18px 0;}
+.intro-body h2{margin:4px 0 4px; font-size:25px; line-height:1.35;}
+.intro-level{font-size:12.5px; font-weight:800; color:#7a7260;}
+.kohai-profile{
+  display:flex; gap:13px; background:#fff; border:2px solid #e7ddc2; border-radius:16px;
+  padding:13px; margin-top:14px; box-shadow:var(--shadow); align-items:flex-start;
+}
+.kohai-profile .kp-avatar{width:84px; height:84px; flex:none;}
+.kohai-profile .kp-name{font-weight:900; font-size:15.5px;}
+.kohai-profile .kp-label{font-size:12px; font-weight:800; color:var(--red); margin:2px 0;}
+.kohai-profile .kp-person{font-size:13px; line-height:1.6; color:#4c4660;}
+.opening-boke{
+  margin-top:13px; background:#eef2ff; border:2px dashed var(--indigo2); border-radius:14px;
+  padding:12px 14px; font-size:14.5px; line-height:1.65; font-weight:700;
+}
+.obj-list{margin:14px 0 0; padding:0; list-style:none;}
+.obj-list li{
+  background:var(--paper2); border:2px solid #e7ddc2; border-radius:12px; padding:9px 12px;
+  font-size:13.5px; font-weight:700; line-height:1.55; margin-bottom:8px;
+}
+.obj-list li::before{content:"目標 "; font-size:11px; font-weight:900; color:var(--violet); display:block;}
+.intro-btns{padding:18px 18px 0; display:flex; flex-direction:column; gap:11px;}
+/* ---------- ジム（セッション） ---------- */
+#screen-gym{background:#f7f1de;}
+.gym-head{
+  padding:10px 14px 8px; background:var(--paper2); border-bottom:2px solid #e7ddc2;
+  display:flex; flex-direction:column; gap:7px;
+}
+.gym-head .gh-row{display:flex; align-items:center; gap:8px;}
+.gym-head .gh-stage{font-size:11.5px; font-weight:900; color:#fff; background:var(--ink); border-radius:6px; padding:2px 8px;}
+.gym-head .gh-topic{font-size:14.5px; font-weight:900; flex:1; line-height:1.35;}
+.gym-head .gh-count{font-size:12.5px; font-weight:900; color:#7a7260; white-space:nowrap;}
+.gym-head .progress-track{background:#eee5c8; margin:0;}
+.gym-kohai{
+  display:flex; gap:11px; align-items:center; padding:9px 14px;
+  background:linear-gradient(90deg,#fff7dd,#fff); border-bottom:2px solid #e7ddc2;
+}
+.gym-kohai .gk-avatar{width:62px; height:62px; flex:none; position:relative;}
+.gym-kohai .gk-name{font-weight:900; font-size:14.5px;}
+.gym-kohai .gk-state{font-size:12px; color:#6b6280; font-weight:700; line-height:1.5;}
+#gym-card{flex:1; display:flex; flex-direction:column; min-height:0; position:relative;}
+#dialogue-feed{flex:1; overflow-y:auto; padding:14px 14px 8px; display:flex; flex-direction:column; gap:10px;}
+.msg{max-width:88%; padding:11px 14px; border-radius:16px; font-size:14.5px; line-height:1.65;
+  white-space:pre-wrap; word-break:break-word; animation:msgin .25s ease-out;}
+@keyframes msgin{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+.msg .msg-who{display:block; font-size:11px; font-weight:900; margin-bottom:3px; opacity:.75;}
+.msg.kohai{align-self:flex-start; background:#fff; border:2px solid #e7ddc2; border-bottom-left-radius:4px;}
+.msg.kohai .msg-who{color:var(--violet);}
+.msg.senpai{align-self:flex-end; background:linear-gradient(180deg,var(--indigo2),var(--indigo)); color:#fff; border-bottom-right-radius:4px;}
+.msg.confused{align-self:flex-start; background:#fff1f2; border:2px solid #fda4af; border-bottom-left-radius:4px;}
+.msg.confused .msg-who{color:var(--red);}
+.msg.awaken{align-self:flex-start; background:linear-gradient(135deg,#fff7cc,#ffe9a8); border:2px solid var(--gold); border-bottom-left-radius:4px; font-weight:700;}
+.msg.awaken .msg-who{color:#a96f14;}
+.msg.memo{align-self:stretch; max-width:100%; background:#312e81; color:#fff; border-radius:14px;}
+.msg.memo .msg-who{color:var(--gold2);}
+.question-box{
+  margin:2px 14px 0; background:#fff; border:2.5px solid var(--ink); border-radius:14px;
+  padding:12px 15px; box-shadow:var(--shadow);
+}
+.question-box .q-label{font-size:11px; font-weight:900; color:var(--violet); letter-spacing:.08em;}
+.question-box .q-text{font-size:17px; font-weight:800; line-height:1.6; margin-top:2px;}
+#input-area{padding:10px 14px calc(12px + env(safe-area-inset-bottom)); background:var(--paper2); border-top:2px solid #e7ddc2;}
+#free-input{
+  width:100%; border:2.5px solid #cfc39f; border-radius:14px; padding:12px 13px;
+  font-size:16px; font-family:inherit; line-height:1.55; resize:vertical; min-height:74px; background:#fff;
+}
+#free-input:focus{outline:none; border-color:var(--indigo);}
+.free-row{display:flex; gap:9px; margin-top:9px;}
+.free-row .btn{flex:1; padding:13px 10px; font-size:16px;}
+.mic-btn{
+  flex:none !important; width:56px; border:2.5px solid var(--ink); background:#fff; border-radius:999px;
+  font-size:20px; font-weight:900;
+}
+.mic-btn.rec{background:#fee2e2; border-color:var(--red);}
+.choices{display:flex; flex-direction:column; gap:10px;}
+.choice-btn{
+  border:2.5px solid var(--ink); background:#fff; border-radius:14px; padding:13px 15px;
+  font-size:15px; font-weight:700; line-height:1.55; text-align:left; box-shadow:0 3px 0 var(--ink);
+  transition:transform .06s, box-shadow .06s;
+}
+.choice-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--ink);}
+.choice-btn .ch-id{
+  display:inline-block; background:var(--ink); color:#fff; font-weight:900; font-size:12.5px;
+  border-radius:6px; padding:1px 8px; margin-right:8px; vertical-align:1px;
+}
+.giveup-row{margin-top:10px; text-align:center;}
+.summary-card{
+  margin:12px 14px 4px; background:linear-gradient(135deg,#fffbe8,#fff3c4);
+  border:2.5px solid var(--gold); border-radius:16px; padding:14px 16px; box-shadow:var(--shadow);
+  animation:msgin .3s ease-out;
+}
+.summary-card .sum-head{font-size:16.5px; font-weight:900; line-height:1.5; color:#7c4a03;}
+.summary-card .sum-label{font-size:11px; font-weight:900; color:#a96f14; letter-spacing:.08em; margin-top:10px;}
+.summary-card .sum-text{font-size:14px; line-height:1.65; font-weight:700; margin-top:2px;}
+.summary-card .sum-trap{color:#b91c1c;}
+.next-row{padding:10px 14px calc(12px + env(safe-area-inset-bottom)); background:var(--paper2); border-top:2px solid #e7ddc2;}
+/* ---------- 結果・復習 ---------- */
+#screen-result{align-items:center; text-align:center; padding:30px 20px;}
+.result-dev{font-size:52px; font-weight:900; color:var(--violet); line-height:1.1;}
+.result-list{width:100%; max-width:360px; margin:16px 0; display:flex; flex-direction:column; gap:9px;}
+.result-item{background:#fff; border:2px solid #e7ddc2; border-radius:13px; padding:11px 14px; font-size:14.5px; font-weight:800; display:flex; justify-content:space-between;}
+.review-item{
+  background:var(--paper2); border:2px solid #e7ddc2; border-left:8px solid var(--orange);
+  border-radius:14px; padding:12px 14px; box-shadow:var(--shadow);
+  display:flex; gap:10px; align-items:center; text-align:left;
+}
+.review-item .rv-main{flex:1; min-width:0;}
+.review-item .rv-topic{font-weight:900; font-size:14.5px; line-height:1.45;}
+.review-item .rv-meta{font-size:11.5px; color:#7a7260; font-weight:700; margin-top:2px; line-height:1.5;}
+.review-item .btn{padding:10px 16px; font-size:14px; flex:none;}
+/* ---------- エフェクト ---------- */
+.shake{animation:shake .45s ease-in-out;}
+@keyframes shake{0%,100%{transform:none;}15%{transform:translateX(-9px);}30%{transform:translateX(8px);}45%{transform:translateX(-6px);}60%{transform:translateX(5px);}75%{transform:translateX(-3px);}}
+.aura{animation:auraPulse 1.15s ease-in-out infinite;}
+.aura::before{
+  content:""; position:absolute; inset:-16px; border-radius:50%;
+  background:radial-gradient(circle, rgba(245,197,66,.65) 0%, rgba(245,197,66,0) 68%);
+  animation:auraSpin 2.6s linear infinite;
+}
+@keyframes auraPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+@keyframes auraSpin{from{transform:rotate(0deg) scale(1);}50%{transform:rotate(180deg) scale(1.12);}to{transform:rotate(360deg) scale(1);}}
+#fx-flash{position:fixed; inset:0; background:#fff8d6; opacity:0; pointer-events:none; z-index:80;}
+#fx-flash.on{animation:flashAnim .7s ease-out;}
+@keyframes flashAnim{0%{opacity:0;}18%{opacity:.92;}100%{opacity:0;}}
+#fx-stamp{
+  position:fixed; left:50%; top:34%; transform:translate(-50%,-50%) scale(.3) rotate(-10deg);
+  font-size:56px; font-weight:900; color:var(--red); border:5px solid var(--red); border-radius:14px;
+  padding:4px 22px; background:rgba(255,255,255,.88); opacity:0; pointer-events:none; z-index:85;
+  letter-spacing:.1em;
+}
+#fx-stamp.on{animation:stampAnim 1.25s ease-out forwards;}
+@keyframes stampAnim{0%{opacity:0; transform:translate(-50%,-50%) scale(2.4) rotate(-16deg);}
+  22%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-8deg);}
+  78%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-50%) scale(1.04) rotate(-8deg);}}
+#confetti-canvas{position:fixed; inset:0; pointer-events:none; z-index:82;}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 .12em; font-size:.82em; line-height:1.25;}
+.frac .frac-num{border-bottom:1.6px solid currentColor; padding:0 .18em;}
+.frac .frac-den{padding:0 .18em;}
+.rad-body{border-top:1.6px solid currentColor; padding:0 .05em;}
+sub,sup{font-size:.68em;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- タイトル画面 -->
+  <section class="screen" id="screen-title">
+    <div class="title-band">教えて、育てる、受験ジム</div>
+    <h1 class="logo">アホの子AI<br><span class="accent">後輩育成ジム</span></h1>
+    <p class="title-sub">偏差値35の後輩・マナブにキミが教える！<br>教えた分だけ、後輩が覚醒する。</p>
+    <div class="title-avatar" id="title-avatar"></div>
+    <div class="title-stats">
+      <span class="stat-chip">後輩の偏差値 <b id="title-dev">35</b></span>
+      <span class="stat-chip">覚醒済み <b id="title-cleared">0</b>/84</span>
+    </div>
+    <div><span class="rank-badge" id="title-rank">おバカ見習い</span></div>
+    <div class="title-btns">
+      <button class="btn big gold" id="btn-to-map">ジムに入る</button>
+      <button class="btn big sub" id="btn-to-review">復習リクエスト（<span id="title-weak">0</span>件）</button>
+    </div>
+    <div class="title-foot">
+      <button class="sound-toggle" id="sound-toggle-title">音：オン</button><br>
+      バージョン 1.0.0
+      <button class="linklike" id="btn-update">最新の版に更新する</button><br>
+      記録はこの端末の中にだけ保存されます（アカウント不要）。
+    </div>
+  </section>
+
+  <!-- マップ画面 -->
+  <section class="screen" id="screen-map">
+    <div class="topbar">
+      <button class="back-btn" id="btn-back-title">← タイトル</button>
+      <div class="tb-title">トレーニングマップ</div>
+      <button class="sound-toggle" id="sound-toggle-map">音：オン</button>
+    </div>
+    <div class="status-card">
+      <div class="sc-avatar" id="map-avatar"></div>
+      <div class="sc-main">
+        <div class="sc-dev">後輩マナブの偏差値<b id="map-dev">35</b></div>
+        <span class="rank-badge" id="map-rank">おバカ見習い</span>
+        <div class="sc-row">
+          <span>覚醒済み <span id="map-cleared">0</span>/84</span>
+          <span>コンボ <span id="map-combo">0</span>（最高 <span id="map-best">0</span>）</span>
+          <span>復習 <span id="map-weak">0</span>件</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="map-progress" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="subj-tabs" id="subj-tabs"></div>
+    <div class="course-bar" id="course-bar">
+      <span class="cb-label">コース絞込:</span>
+    </div>
+    <div class="stages" id="stages-grid"></div>
+  </section>
+
+  <!-- ステージ紹介 -->
+  <section class="screen" id="screen-intro">
+    <div class="topbar">
+      <button class="back-btn" id="btn-back-map">← マップ</button>
+      <div class="tb-title" id="intro-crumb">ステージ紹介</div>
+    </div>
+    <div class="intro-body">
+      <span class="intro-level" id="intro-level"></span>
+      <h2 id="intro-title"></h2>
+      <div class="kohai-profile">
+        <div class="kp-avatar" id="intro-avatar"></div>
+        <div>
+          <div class="kp-name" id="intro-kohai-name"></div>
+          <div class="kp-label" id="intro-kohai-label"></div>
+          <div class="kp-person" id="intro-kohai-person"></div>
+        </div>
+      </div>
+      <div class="opening-boke" id="intro-boke"></div>
+      <ul class="obj-list" id="intro-objectives"></ul>
+    </div>
+    <div class="intro-btns">
+      <button class="btn big gold" id="btn-start-stage">トレーニング開始！</button>
+      <button class="btn sub" id="btn-intro-review">復習リクエストを見る</button>
+    </div>
+  </section>
+
+  <!-- ジム（セッション） -->
+  <section class="screen" id="screen-gym">
+    <div class="gym-head">
+      <div class="gh-row">
+        <button class="back-btn" id="btn-quit-gym">← やめる</button>
+        <span class="gh-stage" id="gym-stage-badge"></span>
+        <span class="gh-topic" id="gym-topic"></span>
+        <span class="gh-count" id="gym-count"></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="gym-progress" style="width:0%"></div></div>
+    </div>
+    <div class="gym-kohai">
+      <div class="gk-avatar" id="gym-avatar"></div>
+      <div>
+        <div class="gk-name">後輩：マナブ <span class="rank-badge" id="gym-rank" style="margin-top:0;">おバカ見習い</span></div>
+        <div class="gk-state" id="gym-state"></div>
+      </div>
+    </div>
+    <div id="gym-card">
+      <div id="dialogue-feed"></div>
+      <div class="question-box" id="question-box">
+        <div class="q-label">マナブからの質問</div>
+        <div class="q-text" id="question-text"></div>
+      </div>
+      <div id="summary-slot"></div>
+      <div id="input-area"></div>
+      <div class="next-row" id="next-row" style="display:none;">
+        <button class="btn big gold" id="btn-next-lesson">次のレッスンへ →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ステージ結果 -->
+  <section class="screen" id="screen-result">
+    <div class="title-band">トレーニング結果</div>
+    <p class="title-sub" style="margin-top:16px;">後輩マナブの偏差値</p>
+    <div class="result-dev" id="result-dev">35</div>
+    <div><span class="rank-badge" id="result-rank">おバカ見習い</span></div>
+    <div class="result-list" id="result-list"></div>
+    <div class="title-btns">
+      <button class="btn big gold" id="btn-result-map">マップへ戻る</button>
+      <button class="btn big sub" id="btn-result-review">復習リクエスト（<span id="result-weak">0</span>件）</button>
+    </div>
+  </section>
+
+  <!-- 復習リクエスト -->
+  <section class="screen" id="screen-review">
+    <div class="topbar">
+      <button class="back-btn" id="btn-review-back">← もどる</button>
+      <div class="tb-title">復習リクエスト</div>
+    </div>
+    <div style="padding:14px 14px 0;">
+      <div style="background:#fff7dd; border:2px solid var(--gold); border-radius:14px; padding:12px 14px; font-size:13.5px; font-weight:700; line-height:1.65;">
+        マナブからの「また忘れちゃいました！」リスト。つまずいたレッスンはここに自動で溜まります。一発で覚醒させるとリストから消えます。
+      </div>
+    </div>
+    <div class="stages" id="review-list" style="padding-top:12px;"></div>
+  </section>
+
+</div>
+<div id="fx-flash"></div>
+<div id="fx-stamp">覚醒！</div>
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+"use strict";
+const SUBJECTS = [{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stages":[{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stage_id":"E-1","stage_title":"5文型と品詞・時制のキホン","target_level":"高校受験・基礎","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値35・単語並べ替え直訳タイプ","personality":"素直で元気だけはいいが、英語を全部単語の直訳でゴリ押ししようとする可愛い後輩","opening_boke":"先輩！英語って要するに英単語の意味を左から順番に読めばいいんですよね！？文型とか時制とか面倒くさいの全部カットでいきましょー！"},"learning_objectives":["第3文型(SVO)と第5文型(SVOC)の違いを見抜き、O=Cの関係で訳せる","現在完了形（継続・経験・完了）と単純過去形を時間軸で使い分けられる"],"lessons":[{"lesson_id":"E-1_L01","topic_tag":"第5文型（SVOC）の見抜き方","weakness_category":"eng_svoc","teach_mode":"free_explain","kohai_question":"I found him honest.","kohai_initial_boke":"先輩！『私は正直な彼を見つけました！』って訳したのにバツでした！彼、別に迷子になってないのに何でですか！？","teaching_rubric":{"canonical_explanation":"him と honest が「彼＝正直だ（O=C）」というイコールの関係になる第5文型(SVOC)なので、「彼が正直だとわかった（気づいた）」と訳す。","required_concepts":["O=C（彼＝正直）の関係","find O C＝「OがCだとわかる」"],"acceptable_keywords":["第5文型","SVOC","イコール","O=C","わかった","気づいた","思う"]},"incomplete_pushbacks":[{"trap_id":"T_E1_01A","trigger_keywords_or_choice":["探した","見つけた","正直な彼"],"missing_point":"第3文型と同じ直訳になっている","kohai_emotion":"dizzy","kohai_confused_line":"えっ、やっぱり『正直な彼を探し出した』じゃないんですか？でも honest が後ろにありますよね…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"うおぉっ！！『him ＝ honest（彼は正直だ）』が成り立つから第5文型で『彼が正直だとわかった』になるんですね！！先輩、マジ神！！","kohai_solved_demo":"ってことは『I found the book easy.』も『本＝簡単だ』だから、『その本が簡単だとわかった』だ！完璧っす先輩！","exp_gain":25},"summary_card":{"headline":"SVOCは「O＝C」が成り立つかチェック！","core_rule":"find / keep / make / leave ＋ O ＋ C（形容詞・名詞）は「OをCの状態にする・OがCだとわかる」。","exam_trap_warning":"SVOO（人に物を〜する）は「人≠物」、SVOCは「O＝C」で見分けるのが鉄則！"}},{"lesson_id":"E-1_L02","topic_tag":"第4文型（SVOO）と第3文型への書き換え","weakness_category":"eng_svoo","teach_mode":"choice_advice","kohai_question":"She bought me a bag. を She bought a bag (   ) me. に書き換える問題です！","kohai_initial_boke":"先輩！『誰々に』だから全部 to を入れればいいんですよね！bought a bag to me で完璧っす！","choices":[{"id":"A","label":"buy は「相手がいなくても1人でできる動作」だから for を使うんだよ！"},{"id":"B","label":"なんでもかんでも to を使えば正解になるよ！"},{"id":"C","label":"me の後ろに前置詞はいらないよ！"}],"teaching_rubric":{"canonical_explanation":"buy・make・cook・find などは相手がいなくてもできる動作なので、第3文型に書き換えるときは前置詞 for を使う。","required_concepts":["for を使う動詞グループ（buy/make/cook/get等）"],"acceptable_keywords":["for","1人","買"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E1_02A","trigger_keywords_or_choice":["B","C"],"missing_point":"to と for の使い分けルールが抜けている","kohai_emotion":"question_marks","kohai_confused_line":"あれっ？でも『give a bag to me』は to なのに、なんでテストだと buy はペケになるんでしょう…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！『give・show・teach』は相手がいないと渡せないから to、『buy・make・cook』は1人でも作って買えるから『〜のために(for)』なんですね！鳥肌立ちました！！","kohai_solved_demo":"じゃあ『He made me a cake.』を書き換えたら『He made a cake FOR me.』！もう一生忘れません！","exp_gain":20},"summary_card":{"headline":"SVOO書き換え：「相手が必要→to」「1人でもできる→for」","core_rule":"to型：give, send, show, teach, tell / for型：buy, make, cook, get, find。","exam_trap_warning":"高校入試の書き換え問題で最も狙われる前置詞の引っ掛け！"}},{"lesson_id":"E-1_L03","topic_tag":"現在完了形 vs 単純過去形","weakness_category":"eng_present_perfect","teach_mode":"free_explain","kohai_question":"「昨日カギをなくした」と「カギをなくしてしまった（今も持っていない）」の違い","kohai_initial_boke":"先輩！どっちも過去の話なんだから、I have lost my key yesterday. って書けば完璧ですよね！？","teaching_rubric":{"canonical_explanation":"現在完了形（have + 過去分詞）は「過去から現在までのつながり」を表すため、yesterday や ago など「過去の一点」を表す言葉とは一緒に使えない。","required_concepts":["現在完了は「今」につながっている","yesterday等の過去語句とは併用不可"],"acceptable_keywords":["今","現在","つなが","yesterday","過去形","使えない","ダメ"]},"incomplete_pushbacks":[{"trap_id":"T_E1_03A","trigger_keywords_or_choice":["同じ","どっちでもいい","昨日もOK"],"missing_point":"現在完了の「今」への焦点と、過去語句との併用禁止が伝わっていない","kohai_emotion":"confident_wrong","kohai_confused_line":"えっ、have lost でも昨日なくしたって伝わりません？なんで先生が『yesterday があるときは絶対ダメ！』って怒るんでしょう？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"あっ！！現在完了は『今どうなってるか』にスポットライトを当ててるから、昔を切り取る『yesterday』とはケンカしちゃうんですね！天才すぎます先輩！！","kohai_solved_demo":"つまり『When did you lose it?』のときも『いつ（過去の一点）』だから現在完了は使わず過去形にするんですね！スッキリ！","exp_gain":25},"summary_card":{"headline":"現在完了＝「過去→今」の矢印！過去の一点(yesterday/When)はNG","core_rule":"I lost my key yesterday.（過去の事実のみ） / I have lost my key.（だから今カギがない）。","exam_trap_warning":"yesterday, last night, 〜 ago, When 〜? が見えたら即「単純過去形」を選ぶ！"}},{"lesson_id":"E-1_L04","topic_tag":"自動詞と他動詞の区別","weakness_category":"eng_vi_vt","teach_mode":"fix_kohai_work","kohai_question":"「会議について議論する」を discuss about the meeting と書いたらバツでした…","kohai_initial_boke":"えー！『〜について議論する』なんだから about 必要じゃないんですか！？日本語に『について』って書いてありますよ！","choices":[{"id":"A","label":"discuss は「〜について議論する」という意味まで含んだ他動詞だから about は不要！"},{"id":"B","label":"about じゃなくて on を入れれば正解だよ！"}],"teaching_rubric":{"canonical_explanation":"discuss は他動詞なので、前置詞 about を挟まずにすぐ後ろに目的語（the meeting）を置く。","required_concepts":["他動詞は前置詞なしで目的語をとる","discuss＝〜について議論する"],"acceptable_keywords":["他動詞","不要","いらない","前置詞"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E1_04A","trigger_keywords_or_choice":["B"],"missing_point":"他動詞の性質を見落としている","kohai_emotion":"crying_laugh","kohai_confused_line":"先輩の言う通り on に変えて出したのにまた先生に赤ペンで消されました…うわーん！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"なるほどー！！discuss の中に最初から『〜について』が内蔵されてるから about を書くと『〜についてについて議論する』になっちゃうんですね！！","kohai_solved_demo":"『enter the room（enter into×）』『marry him（marry with×）』『reach Tokyo（reach to×）』も同じ仲間ですね！全部メモりました！","exp_gain":25},"summary_card":{"headline":"前置詞をつけない要注意他動詞（discuss / enter / marry / reach / attend）","core_rule":"他動詞は直後に名詞（目的語）を置く。日本語の「〜に・〜と・〜について」に釣られて前置詞を入れない。","exam_trap_warning":"talk about（自動詞＋前置詞）と discuss（他動詞）の対比は入試の超定番！"}},{"lesson_id":"E-1_L05","topic_tag":"時・条件を表す副詞節の現在形","weakness_category":"eng_future_in_adverb","teach_mode":"free_explain","kohai_question":"「明日晴れたら、公園に行きます」＝ If it will be sunny tomorrow, I will go to the park.","kohai_initial_boke":"明日（tomorrow）のことだから両方 will を付けて未来形にしました！完璧でしょ先輩！","teaching_rubric":{"canonical_explanation":"「もし〜なら(if)」「〜するとき(when)」という時・条件を表す副詞節の中では、未来のことでも現在形（is）を使う。","required_concepts":["if / when の副詞節では未来でも現在形","If it is sunny"],"acceptable_keywords":["現在形","will","いらない","とる","is","副詞節","時・条件"]},"incomplete_pushbacks":[{"trap_id":"T_E1_05A","trigger_keywords_or_choice":["いいと思う","両方will","後ろのwillを消す"],"missing_point":"主節の will ではなく if 節の will を消すルールが曖昧","kohai_emotion":"dizzy","kohai_confused_line":"えっ、後ろの I will go のほうも現在形にするんですか？どっちの will を消せばいいかわからなくなりました…"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『if / when の塊（副詞節）の中だけ』未来でも現在形にするから『If it IS sunny, I WILL go』になるんですね！！スッキリ解決！！","kohai_solved_demo":"でも『I don't know if he WILL come tomorrow.（彼が来るかどうか）』みたいな名詞節（〜かどうか）のときは未来形 will を使っていいんですよね！","exp_gain":30},"summary_card":{"headline":"時・条件の副詞節（if/when/until/before等）は未来でも「現在形」！","core_rule":"If / When の中＝現在形、メインの文（主節）＝will。ただし「〜かどうか（名詞節）」の if は will を使う。","exam_trap_warning":"「明日」と書いてあっても if の中は三単現の -s（rains / is）を忘れないこと！"}}]},{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stage_id":"E-2","stage_title":"助動詞・受動態・比較のワナ","target_level":"高校受験・基礎","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値42・助動詞ニュアンス迷子","personality":"第1ステージで文型に目覚めたが、助動詞の否定や比較の倍数表現でまた大ボケをかます","opening_boke":"先輩！今回は助動詞と受動態と比較ですね！must に not 付けたら『〜してはいけない』だし、don't have to も同じ『〜してはいけない』ですよね！？"},"learning_objectives":["must not（禁止）と don't have to（不要）、および「助動詞＋have＋p.p.」を正確に使い分けられる","no more than / not more than などの比較の重要構文を構造から理解できる"],"lessons":[{"lesson_id":"E-2_L01","topic_tag":"must not vs don't have to","weakness_category":"eng_must_haveto","teach_mode":"free_explain","kohai_question":"You don't have to go to school today.","kohai_initial_boke":"先輩、大変です！学校から『今日学校に行ってはいけない（禁止）！』ってメールが来ました！停学っすか！？","teaching_rubric":{"canonical_explanation":"must not は「〜してはいけない（禁止）」だが、don't have to は「〜する必要はない（不要）」という意味。","required_concepts":["don't have to＝〜する必要はない（不要）","must not との違い"],"acceptable_keywords":["必要","なくていい","なくてもよい","禁止ではない","不要"]},"incomplete_pushbacks":[{"trap_id":"T_E2_01A","trigger_keywords_or_choice":["禁止","ダメ","行くな"],"missing_point":"must と同じ否定と誤解している","kohai_emotion":"crying_laugh","kohai_confused_line":"ええっ！？やっぱり俺、学校出禁になっちゃったんですか！？でも今日祝日なんですよね…"}],"awakening_reaction":{"kohai_emotion":"tears_of_joy","effect_type":"confetti_storm","praise_line":"よかったぁぁ！！『don't have to』は『〜する必要はない（行っても行かなくてもいい）』って意味なんですね！！祝日だから休みってだけでした！先輩助かったー！","kohai_solved_demo":"つまり『〜してはいけない』と禁止するときだけ『must not』を使って、『しなくていいよ』なら『don't have to / don't need to』ですね！","exp_gain":20},"summary_card":{"headline":"肯定は同じ「must＝have to」、否定は別物！","core_rule":"must not＝「〜してはいけない（禁止）」 / don't have to＝「〜する必要はない（不要）」。","exam_trap_warning":"「Must I 〜?（〜しなければなりませんか？）」に「いいえ」で答えるときは「No, you don't have to.」を使う！"}},{"lesson_id":"E-2_L02","topic_tag":"助動詞 + have + 過去分詞","weakness_category":"eng_modal_past","teach_mode":"choice_advice","kohai_question":"You should have studied harder.（もっと勉強すべきだったのに…）","kohai_initial_boke":"先輩！『should＝〜すべき』だから『これからもっと勉強するべきだ！』っていう未来の応援ですよね！？","choices":[{"id":"A","label":"「助動詞＋have＋p.p.」は過去のこと！「〜すべきだったのに（しなかった）」という後悔だよ！"},{"id":"B","label":"そうそう、これから頑張れっていう未来の意味だよ！"}],"teaching_rubric":{"canonical_explanation":"助動詞＋have＋過去分詞は、過去の事柄に対する推量（〜だったに違いない）や後悔・非難（should have p.p.＝〜すべきだったのに）を表す。","required_concepts":["have + p.p. が付くと過去の意味","should have p.p.＝後悔（〜すべきだったのに）"],"acceptable_keywords":["過去","すべきだった","後悔"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E2_02A","trigger_keywords_or_choice":["B"],"missing_point":"have + p.p. の過去シフトを見落としている","kohai_emotion":"dizzy","kohai_confused_line":"あれっ？でも先生、テスト返却したあとにめっちゃ悲しい顔で『You should have studied...』って言ってたんですよね…"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"ぐはっ！！『should have studied』は『勉強すべきだったのに（実際はサボった）』という過去の後悔なんですね！！だから先生の顔が悲しかったのか…！","kohai_solved_demo":"『must have p.p.（〜したに違いない）』『cannot have p.p.（〜したはずがない）』も全部、過去の話にタイムスリップするんですね！","exp_gain":25},"summary_card":{"headline":"「助動詞＋have＋p.p.」＝ 過去へのタイムスリップ！","core_rule":"should have p.p.（〜すべきだったのに）/ must have p.p.（〜だったに違いない）/ cannot have p.p.（〜だったはずがない）。","exam_trap_warning":"shouldn't have p.p.（〜すべきではなかったのに）も頻出！"}},{"lesson_id":"E-2_L03","topic_tag":"受動態の動作主（by以外）と群動詞","weakness_category":"eng_passive_by","teach_mode":"fix_kohai_work","kohai_question":"「彼はみんなに笑われた」を He was laughed by everyone. と書きました！","kohai_initial_boke":"受動態は『be動詞＋過去分詞＋by』ですよね！だから laugh を過去分詞にして完璧っす！","choices":[{"id":"A","label":"laugh at（〜を笑う）は2語セットだから、was laughed at by にしないと at が消えちゃうよ！"},{"id":"B","label":"by じゃなくて with にすれば完璧！"}],"teaching_rubric":{"canonical_explanation":"laugh at・look after・take care of などの群動詞を受動態にするときは、後ろの前置詞（atなど）を落とさずに「was laughed at by 〜」とする。","required_concepts":["群動詞の前置詞を消さない（laughed at by）"],"acceptable_keywords":["at","セット","群動詞","前置詞"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E2_03A","trigger_keywords_or_choice":["B"],"missing_point":"群動詞の前置詞脱落","kohai_emotion":"question_marks","kohai_confused_line":"えっ、laugh with だと『みんなと一緒に楽しく笑った』になっちゃいません！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"おおお！！『laugh at』で1つの他動詞みたいなセットだから、『at』と『by』が2個連続で並んでも消しちゃダメなんですね！！","kohai_solved_demo":"『The baby was taken care of by my sister.（of と by が並ぶ！）』もこれで怖くないです！","exp_gain":25},"summary_card":{"headline":"群動詞の受動態は「前置詞＋by」の2連続を恐れない！","core_rule":"laugh at → be laughed at by / take care of → be taken care of by / look up to → be looked up to by。","exam_trap_warning":"前置詞が2つ並んでいると違和感で消したくなるが、絶対に残す！"}},{"lesson_id":"E-2_L04","topic_tag":"比較：no more than vs not more than","weakness_category":"eng_comparison_more","teach_mode":"free_explain","kohai_question":"I have no more than 1,000 yen. と I have not more than 1,000 yen.","kohai_initial_boke":"先輩！no も not も『〜ない』なんだから、どっちも『1000円以下』で同じ意味ですよね！？","teaching_rubric":{"canonical_explanation":"no more than＝「〜しかない（＝only：少なさを強調）」、not more than＝「せいぜい〜（＝at most：最大でも）」。","required_concepts":["no more than＝〜しかない（only）","not more than＝せいぜい〜（at most）"],"acceptable_keywords":["しか","only","せいぜい","少なく","違う"]},"incomplete_pushbacks":[{"trap_id":"T_E2_04A","trigger_keywords_or_choice":["同じ","両方以下"],"missing_point":"no（感情・少なさの強調＝only）と not（客観的上限＝at most）の違い","kohai_emotion":"dizzy","kohai_confused_line":"うーん、長文の穴埋めで『only』と同じ意味を選べって言われたとき、どっちを選べばいいんですか…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"あっ！！『no more than ＝ only（たった〜しかない！）』で、文字数が短い『no』のほうが意味も『only（短い）』、文字が長い『not』は『at most（せいぜい）』って覚えたら一発ですね！！","kohai_solved_demo":"じゃあ『no less than 1,000 yen』は逆だから『1,000円も！（＝as much as）』ですね！先輩マジ天才！！","exp_gain":30},"summary_card":{"headline":"クジラ構文と並ぶ比較の鬼門「no/not ＋ 比較級 ＋ than」","core_rule":"no more than ＝ only（〜しかない） / no less than ＝ as many/much as（〜も） / not more than ＝ at most（せいぜい）。","exam_trap_warning":"大学入試の長文・語句整序・書き換え問題で超頻出！"}}]},{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stage_id":"E-3","stage_title":"準動詞（不定詞・動名詞・分詞）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値48・-ingを見ると全部進行形にする男","personality":"基礎はついてきたが、動詞の形が変わる準動詞（to不定詞・動名詞・分詞）で混乱しがち","opening_boke":"先輩！英語って -ing が付いたら全部『〜している（進行形）』ですよね！？動名詞とか分詞とか名前多すぎて無理っす！"},"learning_objectives":["動名詞のみ・不定詞のみを目的語にとる動詞と、意味が変わる動詞(remember/forget/stop)を区別できる","分詞の限定用法（能動-ing vs 受動-ed）と分詞構文の訳し方をマスターする"],"lessons":[{"lesson_id":"E-3_L01","topic_tag":"動名詞 vs 不定詞（stop doing vs stop to do）","weakness_category":"eng_stop_ing_to","teach_mode":"free_explain","kohai_question":"He stopped smoking. と He stopped to smoke.","kohai_initial_boke":"先輩！どっちも stop と smoke だから『彼はタバコをやめた（禁煙した）』で同じ意味ですよね！？えっ、違うの！？","teaching_rubric":{"canonical_explanation":"stop -ing は「〜することをやめる（禁煙した）」、stop to do は「〜するために立ち止まる（タバコを吸うために足を止めた）」で意味が真逆になる。","required_concepts":["stop -ing＝やめる","stop to do＝〜するために立ち止まる"],"acceptable_keywords":["ため","立ち止ま","やめる","吸うため","禁煙"]},"incomplete_pushbacks":[{"trap_id":"T_E3_01A","trigger_keywords_or_choice":["同じ","禁煙"],"missing_point":"to smoke が不定詞の副詞的用法（〜するために）である点","kohai_emotion":"confident_wrong","kohai_confused_line":"だって stop の後ろだから『タバコを吸うのをやめた』じゃないんですか？『to smoke』だと何か変わるんですか？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"うわっ、真逆じゃないですか！！『stop smoking＝タバコをやめた（禁煙）』なのに、『stop to smoke＝タバコを吸うために（歩くのを）止まった（吸ってる！）』なんですね！！","kohai_solved_demo":"『remember / forget ＋ -ing（過去の〜したことを覚えている/忘れる）』vs『＋ to do（これからの〜するべきことを覚えている/忘れる）』も同じ原理だ！","exp_gain":25},"summary_card":{"headline":"-ingは「過去・反復（すでにやっている）」、to doは「未来（これから）」","core_rule":"stop -ing（〜をやめる）/ stop to do（〜するために立ち止まる）。remember/forget も「-ing＝過去」「to do＝未来」。","exam_trap_warning":"MEGAFEPS（mind, enjoy, give up, avoid, finish, escape, practice, stop）の後ろは必ず動名詞(-ing)！"}},{"lesson_id":"E-3_L02","topic_tag":"感情を表す分詞（exciting vs excited）","weakness_category":"eng_emotion_participle","teach_mode":"fix_kohai_work","kohai_question":"「私はそのニュースにワクワクした」を I was exciting at the news. と書きました！","kohai_initial_boke":"先輩！ワクワクするのは俺だから、元気よく -ing で I was exciting! ですよね！？","choices":[{"id":"A","label":"excite は「人をワクワクさせる」という意味！自分がワクワクさせられる側だから excited（過去分詞）にするんだよ！"},{"id":"B","label":"人が主語ならいつでも -ing にすれば大丈夫だよ！"}],"teaching_rubric":{"canonical_explanation":"感情動詞（excite, surprise, interest, bore）は「（物を主語にして）人を〜させる」という意味なので、人が感情を受けるときは過去分詞(-ed)を使う。","required_concepts":["主語が人なら過去分詞(-ed)","主語が物・事なら現在分詞(-ing)"],"acceptable_keywords":["させられる","受身","ed","過去分詞","物","人"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E3_02A","trigger_keywords_or_choice":["B"],"missing_point":"人が主語＝受動(-ed)の原則","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ！？『I am boring.』って言ったら『俺って退屈な人間なんだぜ』って自己紹介になっちゃうんですか！？恥ずかしすぎる！！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"危なかったー！！『I am excited.（ワクワクさせられた＝ワクワクしてる）』で、『The game was exciting.（試合が人をワクワクさせる）』なんですね！先輩ナイスセーブ！！","kohai_solved_demo":"『I am interested in math.（興味を持たせられた＝興味がある）』もこれでバッチリ説明できます！","exp_gain":25},"summary_card":{"headline":"感情分詞：人＝-ed（させられる）、モノ・コト＝-ing（させる）","core_rule":"excite / surprise / interest / satisfy / disappoint などの感情他動詞はすべてこの法則。","exam_trap_warning":"共通テスト・私大の文法問題で「人＋-ing」のダミーは超頻出！"}},{"lesson_id":"E-3_L03","topic_tag":"分詞構文の訳し方と意味上の主語","weakness_category":"eng_participle_clause","teach_mode":"free_explain","kohai_question":"Seeing me, he ran away. と Seen from the hill, the town looks small.","kohai_initial_boke":"先輩！文の最初に急に『Seeing』とか『Seen』とか動詞が裸で出てきてパニックです！どうやって訳せばいいんですか！？","teaching_rubric":{"canonical_explanation":"分詞構文は「主節の主語（he や the town）」が「する側」なら -ing、「される側」なら過去分詞(-ed)で始まり、文脈に合わせて「〜するとき・〜なので・〜しながら・もし〜なら」と訳す。","required_concepts":["主節の主語との関係（能動-ing / 受動-ed）","文脈で接続詞を補って訳す"],"acceptable_keywords":["主語","する","される","受身","とき","ので","から","接続詞"]},"incomplete_pushbacks":[{"trap_id":"T_E3_03A","trigger_keywords_or_choice":["現在進行形","名詞"],"missing_point":"コンマ＋SVに繋がる分詞構文の構造","kohai_emotion":"dizzy","kohai_confused_line":"えっ、1つ目は『私を見て、彼は逃げた』だけど、2つ目は『丘から見て…』だと町が自分の目で見てることになっちゃいません！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"おおお！！後ろの主語『the town』が『（人によって）見られる側』だから『Seen（過去分詞）』になってるんですね！！超わかりやすい！！","kohai_solved_demo":"つまり分詞構文の2択問題は『後ろのコンマの直後の主語』を見て、『する側なら-ing、される側ならp.p.』で秒殺ですね！","exp_gain":30},"summary_card":{"headline":"分詞構文の極意：「コンマの後ろの主語」が能動(-ing)か受動(-ed)か！","core_rule":"否定の not は分詞の直前（Not knowing what to do）。付帯状況の「with + O + 分詞」も O と分詞の能動/受動で判断。","exam_trap_warning":"「with his arms folded（腕を組んで）」は腕が「組まれる側」なので過去分詞 folded！"}},{"lesson_id":"E-3_L04","topic_tag":"使役動詞（make/have/let）と知覚動詞","weakness_category":"eng_causative","teach_mode":"choice_advice","kohai_question":"I had my car (   ) yesterday.（昨日車を修理してもらった）","kohai_initial_boke":"先輩！使役動詞『have O 原形』だから、括弧には原形の repair が入りますよね！？","choices":[{"id":"A","label":"O が「my car（モノ）」だから、修理「される」関係になって過去分詞の repaired にするんだよ！"},{"id":"B","label":"使役動詞だからいつでも原形 repair でOKだよ！"}],"teaching_rubric":{"canonical_explanation":"使役動詞・知覚動詞＋O＋C の形では、OとCが能動関係なら原形（または-ing）、Oがモノなどで「される（受動）」関係なら過去分詞（p.p.）を使う。","required_concepts":["OとCが受動関係（車は修理される）なので過去分詞 repaired"],"acceptable_keywords":["される","受動","過去分詞","repaired"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E3_04A","trigger_keywords_or_choice":["B"],"missing_point":"my car と repair の受動関係を見落としている","kohai_emotion":"question_marks","kohai_confused_line":"あれっ？でも『my car repair』だと、俺の車がトランスフォーマーみたいに自分で修理することになっちゃいません！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"納得！！『車が修理される』だから『had my car REPAIRED』なんですね！！『make oneself understood（自分の言いたいことを理解させる＝自分が理解される）』も同じだ！","kohai_solved_demo":"『I had my wallet stolen.（財布を盗まれた＝被害）』も同じ『have O 過去分詞』の形ですね！","exp_gain":25},"summary_card":{"headline":"使役・知覚（V ＋ O ＋ C）：O＝モノなら「過去分詞」を疑え！","core_rule":"Oがする→原形(do) / Oがされる→過去分詞(done)。なお make と同じ意味の get は「get 人 to do」で to が必要。","exam_trap_warning":"「make oneself understood / heard（英語で自分の意思を伝える）」は英作文・文法ともに超頻出！"}}]},{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stage_id":"E-4","stage_title":"関係詞・仮定法・倒置・強調","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値53・whichとwhereの2択で毎回外す男","personality":"長文も少し読めるようになってきたが、関係代名詞vs関係副詞と仮定法の時制ズレで大混乱中","opening_boke":"先輩！関係詞って『人ならwho、モノ・場所ならwhich』ですよね！？なんで場所なのに which が正解になったり where が正解になったりするんですかー！？"},"learning_objectives":["関係代名詞（後ろが不完全文）と関係副詞（後ろが完全文）を100%見分けられる","仮定法過去・仮定法過去完了・混合仮定法および倒置構文を正確に処理できる"],"lessons":[{"lesson_id":"E-4_L01","topic_tag":"関係代名詞 which vs 関係副詞 where","weakness_category":"eng_rel_which_where","teach_mode":"free_explain","kohai_question":"This is the house (   ) I visited last year. vs This is the house (   ) I lived last year.","kohai_initial_boke":"先輩！どっちも前が the house（場所）だから、両方とも where でいいですよね！？","teaching_rubric":{"canonical_explanation":"前の名詞（場所）だけで判断せず、後ろの文が「名詞が1つ欠けた不完全文（visitedの目的語がない）」なら関係代名詞 which、「S+Vなどが揃った完全文（livedは自動詞）」なら関係副詞 where を使う。","required_concepts":["後ろが不完全文→which","後ろが完全文→where"],"acceptable_keywords":["完全","不完全","目的語","欠け","visited","後ろ"]},"incomplete_pushbacks":[{"trap_id":"T_E4_01A","trigger_keywords_or_choice":["前が場所だから","両方where"],"missing_point":"後ろの文の完全・不完全チェックが抜けている","kohai_emotion":"dizzy","kohai_confused_line":"えっ、前の単語が『house（家）』でも where じゃないときがあるんですか？どこを見れば区別できるんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおお！！前じゃなくて『後ろの文に穴（名詞の欠け）があるかどうか』を見るんですね！！visited は他動詞で目的語が抜けてるから which、lived は完全文だから where！鳥肌モノの神解説っす先輩！！","kohai_solved_demo":"これ『when vs which』や『in which（後ろが完全文）』のときも全く同じルールで100%解けますね！","exp_gain":30},"summary_card":{"headline":"関係詞の鉄則：「前の名詞」ではなく「後ろの文の完全・不完全」で決める！","core_rule":"後ろが不完全（SやOが欠けている）→ 関係代名詞(which/that) / 後ろが完全（欠けがない）→ 関係副詞(where/when) または 前置詞+which。","exam_trap_warning":"共通テスト・私大文法で毎年のように出題される最頻出ポイント！"}},{"lesson_id":"E-4_L02","topic_tag":"関係代名詞 what と前置詞＋関係代名詞","weakness_category":"eng_rel_what","teach_mode":"choice_advice","kohai_question":"What I want is time. と That I want is time.","kohai_initial_boke":"先輩！『私が欲しいもの』って言いたいとき、名詞節の that を使って That I want is time. じゃダメなんですか？","choices":[{"id":"A","label":"that（接続詞）の後ろは完全文じゃないとダメ！want の目的語が欠けてるから「〜すること・もの」の what を使うんだよ！"},{"id":"B","label":"どちらを使っても意味は全く同じだよ！"}],"teaching_rubric":{"canonical_explanation":"接続詞 that の後ろは完全文になるが、関係代名詞 what（＝the thing which）は先行詞を含み、後ろに名詞の欠け（不完全文）が来る。","required_concepts":["what の後ろは不完全文","that（接続詞）の後ろは完全文"],"acceptable_keywords":["what","完全","不完全","目的語"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E4_02A","trigger_keywords_or_choice":["B"],"missing_point":"what と接続詞 that の違い","kohai_emotion":"question_marks","kohai_confused_line":"あれっ？でも『I know that he is honest.』のときは that の後ろ、欠けてないですよね？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"あっ！！接続詞の that は後ろが『完全文（he is honest）』、関係代名詞の what は後ろが『不完全文（I want [ ]）』なんですね！！見分け方めっちゃ明確！！","kohai_solved_demo":"『what is called 〜（いわゆる〜）』『what we are today（今日の私たち）』も what の慣用表現ですね！","exp_gain":25},"summary_card":{"headline":"名詞節の「that vs what」＝ 後ろが完全なら that、不完全なら what！","core_rule":"what ＝ the thing(s) which（「〜すること・もの」）。先行詞は置かない。","exam_trap_warning":"「what＋不完全文」が主語になるときは単数扱い（is / makes）になるのが基本！"}},{"lesson_id":"E-4_L03","topic_tag":"仮定法過去 vs 仮定法過去完了（混合仮定法）","weakness_category":"eng_subjunctive","teach_mode":"free_explain","kohai_question":"If I had studied harder then, I would pass the exam today.","kohai_initial_boke":"先輩！『当時もっと勉強していたら（had studied＝過去完了）、今日受かったのに（would pass＝現在）』…あれ？if の中と後ろで時制がズレてて気持ち悪くないですか！？ミスプリですか！？","teaching_rubric":{"canonical_explanation":"「あの時〜していたら（過去の反実仮想＝had p.p.）、今ごろ〜だろうに（現在の反実仮想＝would 原形）」のように、過去の行動が現在に影響している場合は時制を組み合わせる（混合仮定法）。","required_concepts":["過去の仮定(had p.p.)と現在の仮定(would 原形)の組み合わせ","then と today の時間差"],"acceptable_keywords":["混合","過去","現在","今","当時","today","ズレ"]},"incomplete_pushbacks":[{"trap_id":"T_E4_03A","trigger_keywords_or_choice":["ミスプリ","同じにする","would have passed"],"missing_point":"today という現在のキーワードを見落としている","kohai_emotion":"dizzy","kohai_confused_line":"えっ、後ろも would have passed に揃えないとダメなんですか？でも文末に『today（今日）』って書いてありますよ…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『then（あの時）→ had studied（仮定法過去完了）』と『today（今）→ would pass（仮定法過去）』をドッキングさせる『混合仮定法』なんですね！！だから文末の now / today が超重要ヒントになるのか！！","kohai_solved_demo":"もし『now / today』がなかったら普通に『would have passed』にするんですね！完璧に理解しました先輩！！","exp_gain":30},"summary_card":{"headline":"仮定法の時制は「今のこと→過去形」「昔のこと→過去完了形」＋「now/today」に注意！","core_rule":"現在の妄想＝If S 過去形, S would 原形 / 過去の後悔＝If S had p.p., S would have p.p. / 混合＝had p.p. ＋ would 原形 now。","exam_trap_warning":"If を省略した倒置「Had I studied 〜（もし勉強していたら）」「Were I a bird 〜」も読解・文法で頻出！"}},{"lesson_id":"E-4_L04","topic_tag":"否定語の文頭倒置と強調構文","weakness_category":"eng_inversion","teach_mode":"choice_advice","kohai_question":"Never have I seen such a beautiful sunset.（こんな美しい夕日は見たことがない）","kohai_initial_boke":"先輩！最後が『？（クエスチョンマーク）』じゃないのに、なんで have が I の前に出て疑問文みたいになってるんですか！？","choices":[{"id":"A","label":"Never や Little のような否定語が文頭に飛び出すと、強調のために後ろが疑問文の語順（倒置）になるんだよ！"},{"id":"B","label":"筆者がクエスチョンマークを書き忘れただけだよ！"}],"teaching_rubric":{"canonical_explanation":"否定語（Never, Seldom, Little, Not only, Only after 〜）が文頭に出ると、主語と助動詞（またはbe動詞/do）がひっくり返る倒置が起きる。","required_concepts":["否定語の文頭移動による疑問文語順の倒置"],"acceptable_keywords":["否定","倒置","文頭","疑問文の語順"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E4_04A","trigger_keywords_or_choice":["B"],"missing_point":"否定語倒置のルール","kohai_emotion":"crying_laugh","kohai_confused_line":"いや、入試問題の英文がそんなにミスだらけなわけないじゃないですか先輩ｗ"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"なるほど！！『Never』『Little』『Not only』みたいな否定チームが先頭に出たら、後ろは『疑問文の語順（did S V / have S p.p.）』に倒置されるんですね！","kohai_solved_demo":"『Only after he left did I realize the truth.（彼が去った後になって初めて私は真実に気づいた）』も Only＋副詞句の倒置ですね！","exp_gain":25},"summary_card":{"headline":"文頭の「否定語・Only句」を見たら、後ろの「疑問文語順（倒置）」に注意！","core_rule":"Never / Seldom / Little / Not only / Hardly / Only 〜 が文頭 → 助動詞＋S＋V の語順。","exam_trap_warning":"「It is A that 〜」は A を抜いても文が成立すれば「強調構文」、成立しなければ「形式主語 it」！"}}]},{"schema_version":"1.0.0","subject_id":"english","subject_name":"英語","stage_id":"E-5","stage_title":"長文精読・パラグラフリーディング＆英作文","target_level":"大学受験・理系二次/難関大","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値58・和文直訳で英作文がバグる男","personality":"文法はほぼマスターしたが、長文の論理展開と自由英作文の「和文和訳」で難関大の壁にぶつかっている","opening_boke":"先輩！ついに難関大レベルの長文と英作文です！英作文って日本語の難しい漢字をそのまま英単語に変換すれば高得点ですよね！？"},"learning_objectives":["譲歩・逆接・言い換えマーカーから長文の主張（トピックセンテンス）を高速で抜き出せる","難しい日本語を中学生レベルの英語に言い換える「和文和訳」で減点されない英作文を書ける"],"lessons":[{"lesson_id":"E-5_L01","topic_tag":"パラグラフリーディング（譲歩と主張）","weakness_category":"eng_reading_discourse","teach_mode":"choice_advice","kohai_question":"長文で『It is true that A is convenient. However, B is more important.』と書いてあるときの著者の主張は？","kohai_initial_boke":"先輩！『It is true that（〜というのは真実だ！）』って書いてあるから、著者は A を全力で推してるんですよね！？","choices":[{"id":"A","label":"It is true that / Admittedly / Certainly は譲歩のサイン！本音は However の後ろの B にあるんだよ！"},{"id":"B","label":"「真実だ」と言い切っているから A が著者の結論だよ！"}],"teaching_rubric":{"canonical_explanation":"It is true that 〜 / Of course 〜 / Certainly 〜 は一度相手の意見を認める「譲歩」の合図であり、筆者の主張は必ず逆接（However / Yet / Still）の後に来る。","required_concepts":["It is true that は譲歩","However 以降が筆者の主張"],"acceptable_keywords":["譲歩","However","逆接","後ろ"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_E5_01A","trigger_keywords_or_choice":["B"],"missing_point":"譲歩構文の見抜きミス","kohai_emotion":"dizzy","kohai_confused_line":"えっ、じゃあ何で However の後ろに B のほうが大事って書いてあるんですか？著者の主張がブレてません…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおお！！『たしかに A は便利だ。しかし B のほうが大事だ』っていう英語版の譲歩構文なんですね！！これで共通テストの長文の要旨問題、秒で解けます！！","kohai_solved_demo":"『While A may be true, B is...』の While（〜だけれども）も後ろの B が主張の合図ですね！","exp_gain":30},"summary_card":{"headline":"英語長文の黄金ルール：譲歩(It is true / While)の後の「However/Yet」の後ろが主役！","core_rule":"1パラグラフ＝1トピック。冒頭の主張か、However などの逆接後に筆者のコアメッセージが置かれる。","exam_trap_warning":"「In other words（言い換えると）」の後ろも同じ意味なので、前の難しい文が読めなくてもそこで挽回できる！"}},{"lesson_id":"E-5_L02","topic_tag":"自由英作文の極意「和文和訳」","weakness_category":"eng_writing_wafuku","teach_mode":"free_explain","kohai_question":"英作文のお題：「多くの若者がスマートフォンに依存している。」","kohai_initial_boke":"先輩！『依存』って英単語が思い出せないので『Smartphone is the boss of young people!』って書こうと思います！どうですか！？","teaching_rubric":{"canonical_explanation":"難しい単語（依存する＝depend on / be addicted to）を無理に思い出そうとせず、「スマホなしでは生きられない（cannot live without）」「スマホを長時間使いすぎている（use smartphones too much）」のように簡単な英語に言い換える（和文和訳）。","required_concepts":["簡単な英語への言い換え（和文和訳）","without / spend too much time / depend on 等"],"acceptable_keywords":["言い換え","簡単","without","depend","too much","使","離せない"]},"incomplete_pushbacks":[{"trap_id":"T_E5_02A","trigger_keywords_or_choice":["boss","かっこいい","そのまま"],"missing_point":"和文和訳（易しい日本語への変換）の視点がない","kohai_emotion":"crying_laugh","kohai_confused_line":"いや『スマホが若者の上司だ』って書いたら採点官に『SF小説か？』ってツッコまれません！？もっと自然に言える簡単な言い方ないですか？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"うおぉぉ！！『多くの若者がスマホなしでは暮らせない（Many young people cannot live without their smartphones.）』とか『使いすぎている』なら中学英語で100%ミスなく書けますね！！先輩マジ神！！","kohai_solved_demo":"『少子高齢化が進んでいる』も『子どもの数が減り、お年寄りの数が増えている（The number of children is decreasing, while that of elderly people is increasing.）』でバッチリ書けますね！","exp_gain":40},"summary_card":{"headline":"英作文の極意「和文和訳」：難しい日本語を中2レベルの日本語に直してから訳す","core_rule":"「依存する」→「〜なしで暮らせない / 頼っている」。「メリット・デメリット」→「良い点・悪い点」。減点されない安全な表現を選ぶ。","exam_trap_warning":"無生物主語や抽象名詞を無理に使わず、「People / We」を主語にすると文法ミスが激減する！"}}]}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stages":[{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-1","stage_title":"方程式・二次関数と場合分け","target_level":"高校受験・基礎","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値37・定義域を見ずに頂点だけ答える男","personality":"公式を丸暗記してすぐ当てはめようとするが、条件や場合分けを全部すっ飛ばす元気な後輩","opening_boke":"先輩！二次関数の最小値なんて、平方完成して頂点の y 座標を答えたら終わりっすよね！？え、x の範囲？そんなの飾りっすよ！"},"learning_objectives":["二次方程式の解の公式・判別式 D と「2乗の符号」の基本を正しく扱える","定義域に制限がある二次関数の最大・最小を軸の位置で場合分けして求められる"],"lessons":[{"lesson_id":"M-1_L01","topic_tag":"二次関数の最小値（定義域と軸）","weakness_category":"math_quad_domain","teach_mode":"free_explain","kohai_question":"y = (x - 1)^2 + 2 （ただし 3 ≦ x ≦ 5）の最小値は？","kohai_initial_boke":"先輩！頂点が (1, 2) だから最小値は 2 ですよね！！一瞬で解けました！！","teaching_rubric":{"canonical_explanation":"軸 x = 1 は定義域 3 ≦ x ≦ 5 の外にあるため、頂点は使えない。範囲内で一番左端の x = 3 のときに最小値 (3-1)^2 + 2 = 6 をとる。","required_concepts":["軸 x=1 が定義域 3≦x≦5 の外にある","x=3 のとき最小値 6"],"acceptable_keywords":["範囲","定義域","外","x=3","6","頂点","入っていない"]},"incomplete_pushbacks":[{"trap_id":"T_M1_01A","trigger_keywords_or_choice":["2","頂点そのまま","合ってる"],"missing_point":"x=1 が 3≦x≦5 に入っていない点","kohai_emotion":"dizzy","kohai_confused_line":"えっ、先生に『x = 1 って 3 から 5 の中にあるのか？』って聞かれて固まっちゃいました…どういう意味ですか先輩！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"うおぉっ！！x=1 は『立ち入り禁止エリア』だから、許された 3≦x≦5 の中で一番低い x=3 の場所（最小値 6）を見なきゃダメなんですね！！","kohai_solved_demo":"ってことは、逆に最大値を求めるときも『軸から一番遠い端っこ』を見れば一発っすね！先輩、グラフ描くの大事すぎます！！","exp_gain":25},"summary_card":{"headline":"二次関数の最大・最小は「まず定義域の中に軸があるか」をグラフで確認！","core_rule":"下に凸の放物線では、軸に近いほど小さく、軸から遠いほど大きくなる。","exam_trap_warning":"問題文の最後の「（ただし 3≦x≦5）」を読み飛ばして頂点を答えるのは受験生あるあるの失点！"}},{"lesson_id":"M-1_L02","topic_tag":"文字を含む二次関数の場合分け","weakness_category":"math_quad_cases","teach_mode":"choice_advice","kohai_question":"y = (x - a)^2 （0 ≦ x ≦ 2）の最小値を a の値で求める問題！","kohai_initial_boke":"先輩！文字 a が入ったら意味わからんので、とりあえず a = 1 って決めつけて解いていいですか！？","choices":[{"id":"A","label":"軸 x=a が定義域 0≦x≦2 の「①左外(a<0)」「②中(0≦a≦2)」「③右外(a>2)」の3つに場合分けするんだよ！"},{"id":"B","label":"a はいつでも真ん中にあると考えて大丈夫だよ！"}],"teaching_rubric":{"canonical_explanation":"軸 x=a が定義域 [0, 2] の左・中・右のどこにあるかで最小値をとる x が変わるため、a<0、0≦a≦2、a>2 の3通りに場合分けする。","required_concepts":["軸と定義域の位置関係による3通りの場合分け"],"acceptable_keywords":["左","中","右","3つ","場合分け","a<0"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M1_02A","trigger_keywords_or_choice":["B"],"missing_point":"場合分けの必要性","kohai_emotion":"crying_laugh","kohai_confused_line":"それだと模試で『a がマイナスのときはどうなるんだ！』って採点官にバツにされました…うわーん！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"おおお！！定義域の箱 [0, 2] を動かさずに、軸 x=a を『左から右へスライド』させて考えれば3パターン自然に出てきますね！！神！！","kohai_solved_demo":"さらに最大値を聞くときは『定義域のど真ん中 x=1』より軸が左か右か（a<1, a=1, a>1）で分けるんですよね！完璧！！","exp_gain":30},"summary_card":{"headline":"軸が動く二次関数：最小値は「左・中・右（3分け）」、最大値は「中央より左・同じ・右」","core_rule":"下に凸なら、最小値は軸が範囲内に入った瞬間に頂点が最小になる。","exam_trap_warning":"等号（≦）をどこかに1回は入れて、a の全範囲を漏れなくカバーすること！"}},{"lesson_id":"M-1_L03","topic_tag":"2次の係数が0になる落とし穴（2次方程式・判別式）","weakness_category":"math_discriminant_a0","teach_mode":"free_explain","kohai_question":"方程式 ax^2 + 2x + 1 = 0 が「ただ1つの解」をもつような実数 a の値は？","kohai_initial_boke":"先輩！『ただ1つの解＝重解』だから判別式 D = 4 - 4a = 0 を解いて『a = 1』だけですよね！！余裕っす！","teaching_rubric":{"canonical_explanation":"問題文に「2次方程式」と書いていないため、a = 0 のときは1次方程式 2x + 1 = 0 となり、これもちょうど1つの解（x = -1/2）をもつ。よって答えは a = 0, 1。","required_concepts":["a=0 のとき1次方程式になり解が1つある","答えは a = 0 と a = 1"],"acceptable_keywords":["a=0","0","1次方程式","2次方程式ではない","係数"]},"incomplete_pushbacks":[{"trap_id":"T_M1_03A","trigger_keywords_or_choice":["a=1だけ","重解だけ","合ってる"],"missing_point":"x^2 の係数 a=0 のケースの検証漏れ","kohai_emotion":"question_marks","kohai_confused_line":"あれ？でも問題文よく見たら『2次方程式』じゃなくてただの『方程式』って書いてあるんですよね…何か関係あります？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"うわぁぁ！！危なっ！！『a = 0』を入れたら 2x + 1 = 0 の1次方程式になって解が x = -1/2 の1個だけになるじゃないですか！！先輩の観察眼エグすぎる！！","kohai_solved_demo":"『2次方程式』って書いてあったら a≠0 だけど、ただの『方程式』や『関数』なら『x^2 の係数＝0』を絶対チェックします！","exp_gain":30},"summary_card":{"headline":"x^2 の係数が文字のときは「係数＝0」のチェックが最優先！","core_rule":"「方程式」なら a=0（1次方程式）もOK。「2次方程式」と明記されていれば a≠0 が確定。","exam_trap_warning":"共通テスト・難関大で最も点差がつく隠れ条件の1つ！"}},{"lesson_id":"M-1_L04","topic_tag":"不等式の両辺を割るときの符号（文字で割るな）","weakness_category":"math_inequality_divide","teach_mode":"fix_kohai_work","kohai_question":"x(x - 2) > 0 の両辺を x で割りました！","kohai_initial_boke":"先輩！両辺に x があるから x で割って『x - 2 > 0 → x > 2』でスッキリですよね！？","choices":[{"id":"A","label":"x がプラスかマイナスか 0 かわからないのに割ったらダメ！x < 0 も解になるよ！"},{"id":"B","label":"そうそう、同じ文字は約分して消してOKだよ！"}],"teaching_rubric":{"canonical_explanation":"x が負の数のときは不等号の向きが逆になり、x = 0 のときは割ること自体が禁止。よって因数分解された形 x(x - 2) > 0 のままグラフで考え、x < 0, 2 < x と解く。","required_concepts":["符号が不明な文字で割ってはいけない","解は x < 0, x > 2"],"acceptable_keywords":["マイナス","符号","0","割れない","x<0"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M1_04A","trigger_keywords_or_choice":["B"],"missing_point":"負の数で割ると不等号が反転すること・0除算禁止","kohai_emotion":"dizzy","kohai_confused_line":"えっ、でも x = -3 を元の式に代入したら (-3)(-5) = +15 > 0 で成り立っちゃいますよ！？なんで消えちゃったんだろ…"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"ほんとだ！！x がマイナスのときは不等号がひっくり返るし、0 だったら割り算禁止だから、文字で勝手に割っちゃダメなんですね！！","kohai_solved_demo":"方程式のときも『x(x - 2) = 0』を x で割ったら x = 0 の解が消えちゃうから、必ず因数分解したまま考えます！","exp_gain":20},"summary_card":{"headline":"「文字で両辺を割る」は数学最大のタブー（0と負の符号を見落とす）","core_rule":"不等式・方程式は割らずに「左辺に集めて因数分解」が絶対の鉄則。","exam_trap_warning":"どうしても文字で割りたいときは「(i) 文字＝0」「(ii) 文字＞0」「(iii) 文字＜0」に場合分けする！"}}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-2","stage_title":"確率・場合の数・整数（数A）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値45・PとCをサイコロで決める男","personality":"場合の数で同じものを2回数えたり、確率で分母の区別を忘れたりする愛され後輩","opening_boke":"先輩！P と C って正直どっち使っても似たような数字になりますよね！？雰囲気で選んでいいっすか！"},"learning_objectives":["順列(P)と組合せ(C)の明確な使い分け基準を説明できる","余事象・条件付き確率・不定方程式（互いに素）を論理的に処理できる"],"lessons":[{"lesson_id":"M-2_L01","topic_tag":"順列(P)と組合せ(C)の使い分け","weakness_category":"math_p_vs_c","teach_mode":"free_explain","kohai_question":"5人の中から「代表2人」を選ぶ場合と、「委員長1人・副委員長1人」を選ぶ場合の違いは？","kohai_initial_boke":"先輩！どっちも 5人から2人選ぶんだから、両方 5C2 = 10通り ですよね！？","teaching_rubric":{"canonical_explanation":"「代表2人」はAさんとBさんの順番（役割）に区別がないので組合せ 5C2 = 10通り。「委員長と副委員長」は順番（役職）の区別があるので順列 5P2 = 20通り。","required_concepts":["並び順や役職の区別があるなら P","区別がないなら C"],"acceptable_keywords":["区別","順番","並び","役職","P","C","20"]},"incomplete_pushbacks":[{"trap_id":"T_M2_01A","trigger_keywords_or_choice":["両方10","両方同じ"],"missing_point":"順番（役職）の区別の有無","kohai_emotion":"question_marks","kohai_confused_line":"えっ、Aさんが委員長でBさんが副委員長なのと、Bさんが委員長でAさんが副委員長なのって、同じグループだから1通りじゃないんですか？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"ああっ！！『AとBを入れ替えたときに別の結果になるなら P、同じ結果になるなら C』なんですね！！めっちゃスッキリしました！！","kohai_solved_demo":"さらに同じものを含む順列（AAABBの並び）なら『全部並べて同じものの階乗で割る（5! / 3!2!）』、つまり『5C3』と同じですね！","exp_gain":20},"summary_card":{"headline":"PとCの判定法：「2つを入れ替えたら違う意味になるか？」","core_rule":"入れ替えたら別モノ→順列(P) / 入れ替えても同じ→組合せ(C)。","exam_trap_warning":"「組分け（A組とB組に分ける vs 区別のない2組に分ける）」では対称性による割り算（÷2!）を忘れない！"}},{"lesson_id":"M-2_L02","topic_tag":"「少なくとも〜」と余事象","weakness_category":"math_complementary_event","teach_mode":"choice_advice","kohai_question":"コインを4回投げて「少なくとも1回は表が出る確率」","kohai_initial_boke":"先輩！1回表、2回表、3回表、4回表の4パターン全部計算して足します！！気合いでいきます！！","choices":[{"id":"A","label":"「1 - (全部裏が出る確率)」の余事象を使えば 1 - (1/2)^4 = 15/16 で10秒で解けるよ！"},{"id":"B","label":"気合いが一番！4パターン全部足し算しよう！"}],"teaching_rubric":{"canonical_explanation":"「少なくとも1回表」の反対（余事象）は「1回も表が出ない＝すべて裏」。全体の確率1から「すべて裏」の確率 (1/2)^4 を引けば 15/16。","required_concepts":["余事象「すべて裏」","1 - (1/2)^4 = 15/16"],"acceptable_keywords":["余事象","すべて裏","1から引く","15/16"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M2_02A","trigger_keywords_or_choice":["B"],"missing_point":"余事象による計算短縮","kohai_emotion":"dizzy","kohai_confused_line":"うわあ…計算途中で分母ミスって時間切れになっちゃいました…もっと秒で解けるワザないですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うおぉっ！！『少なくとも1回〇〇』の反対は『1回も〇〇しない（全部逆）』だから、1から引くだけで一瞬なんですね！！神ワザ！！","kohai_solved_demo":"サイコロ2個で『目の積が偶数になる確率』も、反対の『積が奇数（両方とも奇数）＝ (3/6)^2 = 1/4』を引いて 3/4 ですね！","exp_gain":25},"summary_card":{"headline":"「少なくとも〜」「積が偶数」「異なる文字」を見たら即「1 - 余事象」！","core_rule":"「少なくとも1つはA」の否定は「すべてAでない」。","exam_trap_warning":"「少なくとも2回」の余事象は「0回と1回」の両方を引く必要がある点に注意！"}},{"lesson_id":"M-2_L03","topic_tag":"確率の分母（同じ玉でも区別する）","weakness_category":"math_prob_distinguish","teach_mode":"free_explain","kohai_question":"赤玉3個、白玉2個が入った袋から1個取り出すとき、赤が出る確率は？","kohai_initial_boke":"先輩！取り出した結果って『赤か白の2通り』だけですよね！？だから確率は 1/2 じゃないんですか！？","teaching_rubric":{"canonical_explanation":"確率は「同様に確からしい」根元事象を数える必要があるため、同じ色の玉にも番号（赤1, 赤2, 赤3, 白1, 白2）をつけてすべて区別する。よって 3/5。","required_concepts":["同様に確からしい","同じ色の玉もすべて区別して 3/5"],"acceptable_keywords":["区別","同様に確からしい","3/5","番号","赤3"]},"incomplete_pushbacks":[{"trap_id":"T_M2_03A","trigger_keywords_or_choice":["1/2","赤か白"],"missing_point":"確率では同じものでも区別する大原則","kohai_emotion":"confident_wrong","kohai_confused_line":"えっ、だって赤玉100個・白玉1個でも『出るのは赤か白』だから 1/2 って言ったらおかしいんですか…？あ、たしかにおかしいかも！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"なるほどぉ！！赤玉100個と白玉1個で 1/2 なわけないですもんね！確率のときは『同じ色の玉にも全部名前をつけて区別する』が絶対ルールなんですね！！","kohai_solved_demo":"『場合の数（何通り？）』では区別しないけど、『確率（分母と分子）』では全部区別する！この違い、一生忘れません！","exp_gain":25},"summary_card":{"headline":"確率の大原則：「同じ見た目の玉やカードでも、すべて番号を振って区別する」","core_rule":"各事象が起こる確率が同じ（同様に確からしい）状態で初めて「場合の数 ÷ 全場合の数」が使える。","exam_trap_warning":"じゃんけんやサイコロの目もすべて区別して数えるのが鉄則！"}},{"lesson_id":"M-2_L04","topic_tag":"1次不定方程式と「互いに素」","weakness_category":"math_indeterminate_eq","teach_mode":"free_explain","kohai_question":"3(x - 1) = 5(y - 2) を満たす整数 x, y を求めるとき、なぜ x - 1 = 5k とおけるの？","kohai_initial_boke":"先輩！なんでいきなり『3 と 5 は互いに素だから』って呪文を書かなきゃいけないんですか！？書かなくても答え一緒じゃダメですか？","teaching_rubric":{"canonical_explanation":"3 と 5 が共通の約数（1以外）をもたない「互いに素」であるからこそ、3(x-1) が 5 の倍数なら (x-1) が 5 の倍数だと断定できる（もし 6(x-1) = 4(y-2) なら x-1 は 4 の倍数とは限らない）。","required_concepts":["3と5が互いに素だから","x-1が5の倍数と断定できる（反例：互いに素でない場合）"],"acceptable_keywords":["互いに素","倍数","約数","断定","反例","2で割れる"]},"incomplete_pushbacks":[{"trap_id":"T_M2_04A","trigger_keywords_or_choice":["決まり","おまじない","書かなくていい"],"missing_point":"互いに素でなければ成立しない具体例の説明","kohai_emotion":"question_marks","kohai_confused_line":"うーん、たとえば 4(x - 1) = 6(y - 2) のときも、x - 1 = 6k って置いていいんじゃないんですか…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うわっ！！4(x-1) = 6(y-2) だと x-1 = 3（6の倍数じゃない！）でも成り立っちゃうんですね！！だから『互いに素』って書かないと論理が破綻して記述で減点されるのか！納得！！","kohai_solved_demo":"じゃあ最初に両辺の最大公約数で割って『互いに素』な状態を作ってから k でおけば完璧ですね！","exp_gain":30},"summary_card":{"headline":"ax = by →「aとbが互いに素なので x = bk」は記述試験の絶対必須フレーズ！","core_rule":"共通因数があれば先に両辺を割って互いに素にしてから、整数 k を導入する。","exam_trap_warning":"「互いに素」の4文字を書き忘れると国公立二次で 2〜5点引かれる定番減点ポイント！"}}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-3","stage_title":"図形と計量・三角関数（数ⅠⅡ）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値49・単位円を描かずに暗記で突っ込む男","personality":"正弦定理・余弦定理の使い分けや、三角関数の合成・角度の範囲で毎回迷子になる後輩","opening_boke":"先輩！sin と cos の角度って、全部 30° か 45° か 60° を当てはめればなんとかなりますよね！？単位円とか描くの面倒っす！"},"learning_objectives":["正弦定理と余弦定理を「わかっている辺と角の組み合わせ」から瞬時に選択できる","三角関数の合成と角度の範囲（定義域のシフト）を正確に処理できる"],"lessons":[{"lesson_id":"M-3_L01","topic_tag":"正弦定理 vs 余弦定理の使い分け","weakness_category":"math_sine_cosine_rule","teach_mode":"choice_advice","kohai_question":"三角形ABCで、a = 5, b = 7, ∠C = 60° がわかっているとき、残りの辺 c を出すにはどっちを使う？","kohai_initial_boke":"先輩！とりあえず名前がカッコいい『正弦定理』でゴリ押ししてみます！！","choices":[{"id":"A","label":"「2辺とその間の角」がわかっているから余弦定理（c^2 = a^2 + b^2 - 2ab cosC）一択だよ！"},{"id":"B","label":"外接円の半径 R が出てこなくても正弦定理で解けるよ！"}],"teaching_rubric":{"canonical_explanation":"「向かい合う辺と角のペア」や「外接円の半径 R」があれば正弦定理、「2辺とその間の角」または「3辺」がわかっているときは余弦定理を使う。","required_concepts":["2辺とその間の角→余弦定理","向かい合うペアまたはR→正弦定理"],"acceptable_keywords":["余弦定理","2辺","間の角","向かい合う"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M3_01A","trigger_keywords_or_choice":["B"],"missing_point":"正弦定理が使える条件の欠如","kohai_emotion":"dizzy","kohai_confused_line":"うーん、a/sinA = b/sinB = c/sin60° って書いたけど、∠A も ∠B も c もわからなくて詰みました…"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！『向かい合う辺と角（例：a と ∠A）や R が絡むなら正弦定理』『3辺や2辺挟角なら余弦定理』って見分けたら1秒で選べますね！！","kohai_solved_demo":"逆に 3辺 (a=3, b=5, c=7) がわかっているときも余弦定理で cos の値が出せますね！","exp_gain":20},"summary_card":{"headline":"正弦定理＝「向かい合うペア or R」、余弦定理＝「3辺 or 2辺挟角」","core_rule":"図を描いて、わかっている辺と角に印をつければどちらを使うか一目で決まる。","exam_trap_warning":"余弦定理で c^2 = 19 が出たら、辺の長さ c > 0 なので必ずプラスの √19 だけを選ぶ！"}},{"lesson_id":"M-3_L02","topic_tag":"三角方程式の角度の範囲（θ と 2θ - π/3）","weakness_category":"math_trig_range","teach_mode":"free_explain","kohai_question":"0 ≦ θ < 2π のとき、sin(θ - π/6) = 1/2 を解け！","kohai_initial_boke":"先輩！sin が 1/2 になるのは π/6 と 5π/6 だから、θ - π/6 = π/6, 5π/6 で終わりですよね！？（あれ、本当に全部合ってる？）","teaching_rubric":{"canonical_explanation":"塊 t = θ - π/6 の範囲を先に計算すると -π/6 ≦ t < 11π/6 になる。この範囲で sin t = 1/2 を探すと（たまたま今回は同じ π/6, 5π/6 だが）、範囲チェックを省くと負の角度や 2π 超えを落とす危険がある。","required_concepts":["θ - π/6 の範囲（-π/6 ≦ t < 11π/6）を先に求める","2θ のときなどは範囲が2周になる"],"acceptable_keywords":["範囲","おきかえ","t","-π/6","確認","2周","ズレる"]},"incomplete_pushbacks":[{"trap_id":"T_M3_02A","trigger_keywords_or_choice":["確認いらない","いつも0から2π"],"missing_point":"中身が変わると範囲もスライドする点","kohai_emotion":"confident_wrong","kohai_confused_line":"じゃあ、同じやり方で sin(θ - π/6) = -1/2 を解いたときに 7π/6 と 11π/6 って書いたらなんでバツだったんですか！？11π/6 は範囲外って言われたんですけど…"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うわぁぁ！！t = θ - π/6 の範囲は『-π/6 ≦ t < 11π/6』だから、t = 11π/6（θ = 2π）は範囲外で、代わりに t = -π/6（θ = 0）が答えになるんですね！！範囲チェック最強！！","kohai_solved_demo":"さらに sin 2θ だったら範囲が 0 ≦ 2θ < 4π で『2周分』チェックしなきゃいけないんですよね！もう絶対に落としません！","exp_gain":30},"summary_card":{"headline":"三角方程式・不等式は「まず中身の角度の範囲を書く」のが鉄則！","core_rule":"0 ≦ θ < 2π なら、θ - π/6 は [-π/6, 11π/6)、2θ は [0, 4π) になる。","exam_trap_warning":"端点のイコール（≦ か ＜ か）で 0 と 2π の採否が分かれるので要注意！"}},{"lesson_id":"M-3_L03","topic_tag":"三角関数の合成（a sinθ + b cosθ）","weakness_category":"math_trig_synthesis","teach_mode":"free_explain","kohai_question":"y = √3 sinθ + cosθ （0 ≦ θ < 2π）の最大値・最小値は？","kohai_initial_boke":"先輩！sin の最大値が 1、cos の最大値も 1 だから、最大値は √3 × 1 + 1 = √3 + 1 で完璧っすよね！？","teaching_rubric":{"canonical_explanation":"sinθ と cosθ は同じ θ で同時に 1 にはなれないため、別々に最大値を入れてはいけない。三角関数の合成を使って 2 sin(θ + π/6) の1つの関数にまとめ、最大値 2、最小値 -2 を求める。","required_concepts":["sinとcosは同時に1になれない","合成して 2 sin(θ + π/6) にする","最大値2・最小値-2"],"acceptable_keywords":["同時","合成","2","1つにまとめる","sin"]},"incomplete_pushbacks":[{"trap_id":"T_M3_03A","trigger_keywords_or_choice":["√3+1","それぞれ1"],"missing_point":"sin=1 と cos=1 が同時には起きない点","kohai_emotion":"dizzy","kohai_confused_line":"えっ、sinθ が 1 になるのって θ = 90° のときですよね？そのとき cos 90° って…あ、0 になるから同時には 1 になれないのか！？じゃあどう解くんですか？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"おおお！！横が sin の係数(√3)、縦が cos の係数(1)の直角三角形を描いて『2 sin(θ + π/6)』に合成すれば、一気に1個の sin になって最大値 2 が出ますね！！","kohai_solved_demo":"角度 θ に制限があるときは、合成後の角度『θ + π/6』の範囲を確認してから単位円で最大・最小を見ます！完璧！","exp_gain":30},"summary_card":{"headline":"sin と cos の1次式を見たら「合成」で1つの sin にまとめる！","core_rule":"a sinθ + b cosθ = √(a^2+b^2) sin(θ + α)。座標 (a, b) を打って斜辺と角度を見る。","exam_trap_warning":"sin と cos に別々に最大値 1 を代入するのは共通テストでもよく出る禁じ手！"}}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-4","stage_title":"指数・対数・微分積分（数Ⅱ）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値51・真数条件を毎回忘れて0点になる男","personality":"計算力は上がってきたが、対数の真数条件や不等式の底の大小でうっかりミスを連発する","opening_boke":"先輩！対数の方程式なんて、log を両辺から消して普通に2次方程式解けば終わりですよね！？え、真数条件？なにそれ美味しいんですか？"},"learning_objectives":["対数の方程式・不等式において「真数 > 0」と「底 > 1 か 0 < 底 < 1 か」を必ず最初に確認できる","数Ⅱ微積（接線・3次関数の極値・1/6公式）を正確かつ高速に計算できる"],"lessons":[{"lesson_id":"M-4_L01","topic_tag":"対数方程式と真数条件","weakness_category":"math_log_domain","teach_mode":"free_explain","kohai_question":"log_2(x - 1) + log_2(x - 3) = 3 を解け！","kohai_initial_boke":"先輩！合体させて (x - 1)(x - 3) = 8 → x^2 - 4x - 5 = 0 → 答えは『x = -1, 5』でバッチリっすよね！！","teaching_rubric":{"canonical_explanation":"対数 log_a M には「真数 M > 0」の条件が絶対必要。元の式より x - 1 > 0 かつ x - 3 > 0 つまり x > 3 なので、x = -1 は不適で答えは x = 5 のみ。","required_concepts":["真数条件（x-1>0 かつ x-3>0 より x>3）","x = -1 は除外して x = 5 のみ"],"acceptable_keywords":["真数","x>3","x > 3","マイナス","プラス","正","5だけ","不適"]},"incomplete_pushbacks":[{"trap_id":"T_M4_01A","trigger_keywords_or_choice":["-1, 5","合ってる","2個とも答え"],"missing_point":"真数条件のチェック漏れ","kohai_emotion":"dizzy","kohai_confused_line":"えっ、x = -1 を元の式に入れたら log_2(-2) になっちゃいますけど…対数の中身ってマイナスになってもいいんですか？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"あっ！！2を何乗してもマイナスにはならないから『真数は絶対プラス（> 0）』なんですね！！だから x > 3 で絞って『x = 5』だけが正解になるのか！危なかったー！！","kohai_solved_demo":"しかも合体した後の (x-1)(x-3) > 0 じゃなくて『合体前の元の式の真数』で x-1>0 かつ x-3>0 を確認するんですよね！完璧！！","exp_gain":30},"summary_card":{"headline":"対数を見たら計算する前にまず「真数＞0」を1行目に書く！","core_rule":"真数条件は必ず「変形する前の元の式」のすべての真数についてチェックする。","exam_trap_warning":"x = -1 のように片方を落とし忘れて減点される受験生が毎年続出！"}},{"lesson_id":"M-4_L02","topic_tag":"対数不等式と底（0 < 底 < 1）","weakness_category":"math_log_base","teach_mode":"choice_advice","kohai_question":"log_{1/2} x > 2 を解くとき、x > (1/2)^2 で x > 1/4 ですよね？","kohai_initial_boke":"先輩！底が 1/2 でも何でも、log を外すときはそのままの不等号で OK ですよね！？","choices":[{"id":"A","label":"底が 0 < 1/2 < 1（1より小さい）だから、log を外すときに不等号の向きが逆（0 < x < 1/4）になるんだよ！"},{"id":"B","label":"向きはそのままで x > 1/4 になるよ！"}],"teaching_rubric":{"canonical_explanation":"底が 1 より小さい（0 < a < 1）ときは減少関数なので、log を外す際に不等号の向きが逆転する。真数条件 x > 0 と合わせて 0 < x < 1/4。","required_concepts":["0 < 底 < 1 なら不等号が逆転","真数条件 x > 0 と合わせて 0 < x < 1/4"],"acceptable_keywords":["逆","向き","1より小さい","0<x<1/4"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M4_02A","trigger_keywords_or_choice":["B"],"missing_point":"底が 0 < a < 1 のときの不等号反転","kohai_emotion":"question_marks","kohai_confused_line":"あれ？x = 1/8 を入れてみたら log_{1/2}(1/8) = 3 > 2 で成り立つけど、x = 2 を入れたら log_{1/2}(2) = -1 で成り立ちませんよ！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！1/2 は掛けるほど小さくなるから、指数の世界では逆転して『0 < x < 1/4』になるんですね！！真数条件の『0 < 』もセットで忘れません！！","kohai_solved_demo":"底が 1/2 みたいな分数の指数不等式 (1/2)^x > (1/2)^3 のときも、不等号を逆にして x < 3 にするんですね！","exp_gain":25},"summary_card":{"headline":"指数・対数不等式：底が「1より大→そのまま」「0〜1→不等号が逆」！","core_rule":"最後に対数の真数条件（x > 0）との共通部分を取るのを忘れないこと。","exam_trap_warning":"「0 < x < 1/4」の下限「0 <」を書き忘れて「x < 1/4」と答えるミスが多発！"}},{"lesson_id":"M-4_L03","topic_tag":"接線の方程式（「上の点」vs「外部の点」）","weakness_category":"math_tangent_point","teach_mode":"free_explain","kohai_question":"点 (0, -1) から放物線 y = x^2 に引いた接線の方程式を求めよ！","kohai_initial_boke":"先輩！点 (0, -1) を通る接線だから、傾きは y' = 2x に x = 0 を代入して 0 ですよね！？","teaching_rubric":{"canonical_explanation":"点 (0, -1) は放物線 y = x^2 上の点ではない（外部の点）。よって接点の座標を (t, t^2) と文字でおいて接線の式を作り、そこに (0, -1) を代入して t を求める。","required_concepts":["(0, -1) は曲線上の点ではない（接点ではない）","接点を (t, t^2) とおく"],"acceptable_keywords":["接点","t","外部","曲線上にない","代入","2つ"]},"incomplete_pushbacks":[{"trap_id":"T_M4_03A","trigger_keywords_or_choice":["傾き0","x=0を代入"],"missing_point":"通る点と接点を混同している","kohai_emotion":"dizzy","kohai_confused_line":"あれっ？でも (0, -1) って y = x^2 に代入しても -1 ≠ 0^2 でグラフの上に乗ってませんよ…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うわっ！！(0, -1) は『接点』じゃなくて放物線の外にある点だから、まず『接点を (t, t^2) とおく』のが絶対スタートなんですね！！そしたら接線も 2本（t = ±1）ちゃんと出てきました！！","kohai_solved_demo":"『点 (a, b) における接線（上の点）』か『点 (a, b) から引いた接線（外部の点）』か、問題文の日本語をよく見ます！","exp_gain":30},"summary_card":{"headline":"接線問題は「その点が曲線の上にあるか（接点か）」を最初に確認！","core_rule":"曲線外の点から引くときは、必ず「接点を (t, f(t)) とおく」→「接線の式を作る」→「通る点を代入する」。","exam_trap_warning":"3次関数の場合は「接点 t の個数 ＝ 接線の本数」になる重要性質も押さえよう！"}},{"lesson_id":"M-4_L04","topic_tag":"1/6公式の使い方と面積","weakness_category":"math_one_sixth","teach_mode":"choice_advice","kohai_question":"放物線 y = 2x^2 と直線 y = 2x + 4 で囲まれた面積 S を求めるとき、1/6公式の頭につく係数は？","kohai_initial_boke":"先輩！1/6公式だから、普通に 1/6 (β - α)^3 で計算すればいいんですよね！？","choices":[{"id":"A","label":"x^2 の係数の絶対値 |a| = 2 を掛けるのを忘れずに！面積は (2/6)(β - α)^3 になるよ！"},{"id":"B","label":"x^2 の係数が 2 でも 3 でも関係なく 1/6 のままでいいよ！"}],"teaching_rubric":{"canonical_explanation":"∫_α^β a(x - α)(x - β) dx = -a/6 (β - α)^3 なので、囲まれた面積を出すときは x^2 の係数 |a| を掛ける必要がある。","required_concepts":["x^2の係数 |a| = 2 を掛ける"],"acceptable_keywords":["係数","2","|a|","掛ける"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M4_04A","trigger_keywords_or_choice":["B"],"missing_point":"x^2 の係数 |a| を掛け忘れている","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、普通に定積分して検算したら答えが 2倍 ズレてるんですけど！？なんでですか先輩！！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"危なっ！！『|a|/6 (β - α)^3』の |a|（今回は 2）を掛け忘れてたんですね！！これで α = -1, β = 2 だから (2/6)×3^3 = 9 で検算ともピタリ一致！！","kohai_solved_demo":"2つの放物線 y = 2x^2 と y = -x^2 + 3 で囲まれた面積も、差をとったときの x^2 の係数 |2 - (-1)| = 3 を掛けますね！","exp_gain":25},"summary_card":{"headline":"1/6公式は「|a|/6 (β - α)^3」：x^2の係数の差 |a| を絶対忘れない！","core_rule":"使えるのは「放物線と直線」または「2つの放物線」で囲まれた（交点 α, β を端とする）ときだけ。","exam_trap_warning":"記述試験ではいきなり結果だけ書かず「∫_α^β 2(x+1)(x-2) dx = ...」と1行挟むと減点されない！"}}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-5","stage_title":"数列・ベクトル（数BC）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値53・数列の和で n=1 を確認しない男","personality":"漸化式やベクトルの計算はできるようになってきたが、r=1 や n=1 などの例外処理をよく落とす","opening_boke":"先輩！等比数列の和なんて a(r^n - 1)/(r - 1) の公式に突っ込めばいつでも100%正解ですよね！？"},"learning_objectives":["等比数列の和で公比 r=1 の場合分け、および Sn から an を求めるときの n=1 確認を徹底できる","ベクトルの内積（垂直＝0）と共面条件・1次独立を正確に使いこなせる"],"lessons":[{"lesson_id":"M-5_L01","topic_tag":"等比数列の和（公比 r=1 の場合分け）","weakness_category":"math_geo_series_r1","teach_mode":"free_explain","kohai_question":"初項 2、公比 x の等比数列の初項から第 n 項までの和 S_n を求めよ！","kohai_initial_boke":"先輩！公式にそのまま入れて S_n = 2(x^n - 1) / (x - 1) で終了っすよね！！","teaching_rubric":{"canonical_explanation":"公比 x が 1 のときは分母 x - 1 が 0 になって割れないため、必ず (i) x = 1 のとき S_n = 2n、(ii) x ≠ 1 のとき 2(x^n - 1)/(x - 1) と場合分けする。","required_concepts":["x = 1 のとき分母が 0 になる","x = 1 のとき S_n = 2n と場合分け"],"acceptable_keywords":["x=1","r=1","分母","0","場合分け","2n"]},"incomplete_pushbacks":[{"trap_id":"T_M5_01A","trigger_keywords_or_choice":["終了","そのまま","OK"],"missing_point":"公比＝1のときの0除算回避","kohai_emotion":"dizzy","kohai_confused_line":"えっ、もし問題で x = 1 だったら分母が 1 - 1 = 0 でエラーになっちゃいません…！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおお！！文字が公比に入ってるときは『x = 1 のとき和は 2 + 2 + … + 2 = 2n』、『x ≠ 1 のとき公式』って絶対場合分けなんですね！！危なかったー！！","kohai_solved_demo":"1 + x + x^2 + … + x^(n-1) の和も『x=1 なら n、x≠1 なら (x^n-1)/(x-1)』ですね！","exp_gain":25},"summary_card":{"headline":"公比に文字を含む等比数列の和＝「公比＝1」と「公比≠1」の2通りに分ける！","core_rule":"分母に文字が来る公式を使うときは、常に「分母＝0 にならないか？」を疑う。","exam_trap_warning":"x = 0 のときも和の公式が成り立つか確認する習慣があるとさらに強い！"}},{"lesson_id":"M-5_L02","topic_tag":"和 S_n から一般項 a_n を求めるときの n=1","weakness_category":"math_sn_to_an","teach_mode":"fix_kohai_work","kohai_question":"S_n = n^2 + 1 のとき、a_n を求めよ！","kohai_initial_boke":"先輩！a_n = S_n - S_{n-1} だから、(n^2 + 1) - {(n-1)^2 + 1} = 2n - 1 ですよね！！n=1 を入れたら 1 だから答えは 2n - 1 っす！","choices":[{"id":"A","label":"S_n - S_{n-1} が使えるのは n ≧ 2 のときだけ！n=1 のときは a_1 = S_1 = 2 になって 2n-1 と一致しないよ！"},{"id":"B","label":"2n - 1 で完璧に一致してるから大丈夫だよ！"}],"teaching_rubric":{"canonical_explanation":"S_{n-1} は n ≧ 2 でないと定義できない（S_0 は存在しない）。よって n ≧ 2 で a_n = 2n - 1 を出し、n = 1 のときは a_1 = S_1 = 1^2 + 1 = 2 と別に出す。今回は一致しないため分けて答える。","required_concepts":["n ≧ 2 の条件が必要","n = 1 は a_1 = S_1 = 2 で別扱い"],"acceptable_keywords":["n≧2","n=1","S_1","2","一致しない"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M5_02A","trigger_keywords_or_choice":["B"],"missing_point":"S_1 = 2 との照合漏れ","kohai_emotion":"crying_laugh","kohai_confused_line":"あれっ！？元の式 S_1 = 1^2 + 1 = 2 なのに、2n-1 に n=1 入れたら 1 になっちゃいました！数が合わないっす先輩！！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"うわっ、マジだ！！S_{n-1} を使う時点で『n ≧ 2 のとき』って書かなきゃいけないし、最後の『n=1 の確認』は S_1 と比べなきゃダメなんですね！！","kohai_solved_demo":"今回は a_1 = 2、n ≧ 2 のとき a_n = 2n - 1 って分けて書くのが正解ですね！危ねえー！！","exp_gain":30},"summary_card":{"headline":"a_n = S_n - S_{n-1} は「n ≧ 2」限定！最後に必ず「a_1 = S_1」と一致するか確認","core_rule":"一致すれば1つの式にまとめ、一致しなければ「n=1 のとき a_1=..., n≧2 のとき a_n=...」と分けて答える。","exam_trap_warning":"Σ の計算でも 0 乗や項のズレが出る問題は n=1 確認が必須！"}},{"lesson_id":"M-5_L03","topic_tag":"ベクトルと垂直・内積ゼロ","weakness_category":"math_vector_perp","teach_mode":"free_explain","kohai_question":"2つのゼロでないベクトル a→ と b→ が垂直に交わるとき、内積 a→・b→ はいくつになる？","kohai_initial_boke":"先輩！垂直ってことは90°でガッツリぶつかってるんだから、内積は最大値になりますよね！？","teaching_rubric":{"canonical_explanation":"内積の定義は |a→||b→|cosθ。垂直のとき θ = 90° で cos90° = 0 なので、内積は 0 になる。","required_concepts":["cos90° = 0 より内積は 0"],"acceptable_keywords":["0","ゼロ","cos90","cos 90"]},"incomplete_pushbacks":[{"trap_id":"T_M5_03A","trigger_keywords_or_choice":["最大","1","大きい"],"missing_point":"cos90° = 0 の計算","kohai_emotion":"question_marks","kohai_confused_line":"えっ、内積って『|a||b|cosθ』ですよね？90°のとき cos90° っていくつでしたっけ…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"そうだ！cos90° = 0 だから『垂直 ⇔ 内積 ＝ 0』なんですね！！『垂直＝内積0』は空間図形でも最強の武器になりますね！！","kohai_solved_demo":"逆に同じ向き（0°）のとき cos0° = 1 で内積が最大 |a||b| になるんですね！","exp_gain":20},"summary_card":{"headline":"図形で「垂直・直角・90°」を見たら即「内積 ＝ 0」を立式！","core_rule":"a→ ⊥ b→ ⇔ a→・b→ = 0 （成分なら x_1 x_2 + y_1 y_2 = 0）。","exam_trap_warning":"ベクトルの大きさ |a→ + b→| を求めたいときは「2乗して内積を出す」のが鉄則！"}},{"lesson_id":"M-5_L04","topic_tag":"空間ベクトルと共面条件","weakness_category":"math_space_coplanar","teach_mode":"choice_advice","kohai_question":"空間で点 P が平面 ABC 上にあるための条件式 OP→ = s OA→ + t OB→ + u OC→ で、s, t, u が満たすべき式は？","kohai_initial_boke":"先輩！空間だから s + t + u = 0 ですよね！？（適当）","choices":[{"id":"A","label":"AP→ = α AB→ + β AC→ を O 起点に直すと、係数の和が s + t + u = 1 になるんだよ！"},{"id":"B","label":"s + t + u = 0 が平面上にある条件だよ！"}],"teaching_rubric":{"canonical_explanation":"点 P が平面 ABC 上にある ⇔ AP→ = α AB→ + β AC→。これを始点 O に書き換えると OP→ = (1-α-β)OA→ + α OB→ + β OC→ となり、3つの係数の和が必ず 1 になる。","required_concepts":["係数の和 s + t + u = 1"],"acceptable_keywords":["1","s+t+u=1","和が1"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M5_04A","trigger_keywords_or_choice":["B"],"missing_point":"係数の和＝1の導出","kohai_emotion":"dizzy","kohai_confused_line":"えっ、試しに P = A のとき（s=1, t=0, u=0）を代入したら s+t+u = 1 になりますよ！？0 じゃないじゃん！！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"ほんとだ！！P = A のときを考えても係数の和は『1』に決まってますね！！平面上の点なら直線と同じく『係数の和＝1』だ！一生忘れません！！","kohai_solved_demo":"さらに直線と平面の交点を出すときは『OP→ = k OD→（直線上）』と『係数の和＝1（平面上）』を連立して解けば一発っすね！","exp_gain":30},"summary_card":{"headline":"共線条件（直線上）も共面条件（平面上）も「起点 O からの係数の和 ＝ 1」！","core_rule":"OP→ = s OA→ + t OB→ + u OC→ で点 P が平面 ABC 上 ⇔ s + t + u = 1。","exam_trap_warning":"1次独立（4点 O,A,B,C が同一平面上にないこと）の確認も記述では重要！"}}]},{"schema_version":"1.0.0","subject_id":"math","subject_name":"数学","stage_id":"M-6","stage_title":"極限・数Ⅲ微積（理系二次）","target_level":"大学受験・理系二次/難関大","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値56・置換積分で区間を変え忘れる理系後輩","personality":"数Ⅲまで進んだが、不定形の極限や合成関数の微分、置換積分の区間でミスをしがち","opening_boke":"先輩！ついに理系のラスボス数Ⅲです！∞ - ∞ の極限なんて『無限から無限を引くんだから 0 』ですよね！？"},"learning_objectives":["不定形（∞/∞、∞-∞、0/0）の極限を式変形（最高次で割る・有理化）で解消できる","合成関数の微分・置換積分（区間変更）・部分積分を正確に実行できる"],"lessons":[{"lesson_id":"M-6_L01","topic_tag":"不定形の極限（∞ - ∞ と有理化）","weakness_category":"math3_limit_inf","teach_mode":"free_explain","kohai_question":"lim_{x→∞} (√(x^2 + 2x) - x) を求めよ！","kohai_initial_boke":"先輩！x→∞ だから (∞ - ∞) で答えは『0』ですよね！？めっちゃ簡単！！","teaching_rubric":{"canonical_explanation":"∞ - ∞ は不定形なのでそのまま 0 にしてはいけない。分子を有理化して 2x / (√(x^2+2x) + x) とし、分母・分子を x で割ることで極限値 1 を求める。","required_concepts":["∞ - ∞ は不定形なので 0 ではない","分子の有理化をして分母分子を x で割る","答えは 1"],"acceptable_keywords":["不定形","有理化","1","割る","0ではない"]},"incomplete_pushbacks":[{"trap_id":"T_M6_01A","trigger_keywords_or_choice":["0","合ってる"],"missing_point":"∞ - ∞ の不定形解消（有理化）","kohai_emotion":"dizzy","kohai_confused_line":"えっ、x = 10000 とか入れて電卓叩いたら、なぜか 0 じゃなくて『1』に近づくんですけど！？なんで 0 じゃないんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うおぉっ！！√(x^2 + 2x) = √((x+1)^2 - 1) ≒ x + 1 だから『(x+1) - x = 1』に近づくんですね！！ちゃんと有理化して 2 / (√(1+2/x) + 1) = 1 を出さないとダメなんですね！","kohai_solved_demo":"さらに x→-∞ のときは √(x^2) = |x| = -x になるから符号に気をつけます！先輩神！！","exp_gain":30},"summary_card":{"headline":"∞ - ∞・∞/∞・0/0 は「不定形」！そのまま決めつけず必ず変形する","core_rule":"ルートを含む ∞ - ∞ は「分子の有理化」→「最高次の項で割る」の2ステップ。","exam_trap_warning":"x → -∞ の極限では t = -x とおいて t → +∞ に直すと符号ミスがゼロになる！"}},{"lesson_id":"M-6_L02","topic_tag":"合成関数の微分（中身の微分忘れ）","weakness_category":"math3_chain_rule","teach_mode":"fix_kohai_work","kohai_question":"y = sin(2x + 1) を x で微分せよ！","kohai_initial_boke":"先輩！sin の微分は cos だから、y' = cos(2x + 1) で完璧っすよね！！","choices":[{"id":"A","label":"合成関数の微分だから、中身の (2x + 1)' = 2 を後ろに掛けるのを忘れないで！答えは 2cos(2x + 1) だよ！"},{"id":"B","label":"sin を cos に変えるだけで完了だよ！"}],"teaching_rubric":{"canonical_explanation":"f(g(x)) の微分は f'(g(x))・g'(x)。よって sin(2x + 1) を微分すると cos(2x + 1) × (2x + 1)' = 2cos(2x + 1) となる。","required_concepts":["合成関数の微分法","中身の微分 2 を掛ける"],"acceptable_keywords":["2","中身","合成","掛ける"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_M6_02A","trigger_keywords_or_choice":["B"],"missing_point":"中身の微分 g'(x) の掛け忘れ","kohai_emotion":"crying_laugh","kohai_confused_line":"うわーん、e^(3x) の微分もそのまま e^(3x) って書いてバツにされました…なんで 3 が出てくるんですか！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"ああっ！！『外側の微分 × 中身の微分』なんですね！！だから (e^(3x))' = 3e^(3x)、(log(x^2+1))' = 2x / (x^2+1) になるのか！！","kohai_solved_demo":"逆の積分のときも『1/2』や『1/3』で割るのを忘れないようにします！","exp_gain":25},"summary_card":{"headline":"数Ⅲ微分の命：「外の微分 × 中身の微分」を呼吸レベルで徹底！","core_rule":"{f(g(x))}' = f'(g(x)) g'(x)。特に sin(ax), e^(ax), log(f(x)), √f(x) で多発する。","exam_trap_warning":"(a^x)' = a^x log a の「log a」も忘れやすいのでセットで確認！"}},{"lesson_id":"M-6_L03","topic_tag":"置換積分の積分区間と dx の変換","weakness_category":"math3_substitution_int","teach_mode":"free_explain","kohai_question":"∫_0^1 x √(1 - x^2) dx を t = 1 - x^2 とおいて置換積分する問題！","kohai_initial_boke":"先輩！t = 1 - x^2 にして dx を dt に変えました！あとはそのまま 0 から 1 まで積分すれば答え出ますよね！？","teaching_rubric":{"canonical_explanation":"定積分で置換積分を行うときは、変数 x の範囲（0 → 1）に対応する新しい変数 t の積分区間（1 → 0）に必ず書き換える必要がある。","required_concepts":["積分区間を x(0→1) から t(1→0) に書き換える","dt = -2x dx の変換"],"acceptable_keywords":["区間","範囲","書き換え","1から0","tの範囲"]},"incomplete_pushbacks":[{"trap_id":"T_M6_03A","trigger_keywords_or_choice":["0から1のまま","変えない"],"missing_point":"定積分の置換における積分区間変更","kohai_emotion":"dizzy","kohai_confused_line":"えっ、dx から dt に文字が変わったのに、∫ の上下の数字 0 と 1 はそのままにしちゃダメなんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"なるほど！！上下の数字は『x の値』だから、文字を t に変えたら『x=0 のとき t=1、x=1 のとき t=0』って上下の数字も t 用に更新しなきゃいけないんですね！！","kohai_solved_demo":"さらに √(1 - x^2) みたいな円の面積（∫_0^1 √(1-x^2) dx）なら x = sinθ とおいて 0 ≦ θ ≦ π/2 に変えるんですよね！理系最強！！","exp_gain":35},"summary_card":{"headline":"定積分の置換積分3点セット：「①tとおく ②dx→dt ③積分区間を書き換える」","core_rule":"置換の表を書いて「x: 0 → 1」「t: 1 → 0」と上下に対応させるとミスが消える。","exam_trap_warning":"x = sinθ の置換では、dx = cosθ dθ の掛け忘れにも注意！"}}]}]},{"schema_version":"1.0.0","subject_id":"japanese","subject_name":"国語","stages":[{"schema_version":"1.0.0","subject_id":"japanese","subject_name":"国語","stage_id":"J-1","stage_title":"現代文・評論文の論理構造","target_level":"高校受験・基礎","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値40・雰囲気とフィーリングで現代文を読む男","personality":"現代文はセンスだと思い込み、接続語も指示語も読まずに『なんとなく良さそう』で選択肢を選ぶ","opening_boke":"先輩！現代文なんて日本語なんだから誰でも読めますよね！？『たしかに〜』って書いてあったら筆者はそれに賛成ってことっすよね！"},"learning_objectives":["譲歩構文（たしかに〜。しかし〜）と二項対立から筆者の主張を正確に抜き出せる","指示語・因果関係の逆転トラップを見抜ける"],"lessons":[{"lesson_id":"J-1_L01","topic_tag":"譲歩構文（たしかに〜。しかし〜）","weakness_category":"jp_ronri_joho","teach_mode":"free_explain","kohai_question":"「たしかにAIは知識を瞬時に返してくれる。しかし、自分の頭で悩む時間こそが知性を育てる。」","kohai_initial_boke":"先輩！最初に『たしかにAIは便利だ！』って言ってるんだから、筆者は『AIに全部任せよう！』って言いたいんですよね！？","teaching_rubric":{"canonical_explanation":"「たしかに〜」は相手の意見や一般論をいったん認める譲歩であり、筆者の本当の主張は逆接「しかし」の後ろに来る。","required_concepts":["「たしかに」は譲歩（前置き）","「しかし」の後ろが筆者の主張"],"acceptable_keywords":["しかし","後ろ","逆接","譲歩","本音","主張"]},"incomplete_pushbacks":[{"trap_id":"T_J1_01A","trigger_keywords_or_choice":["賛成","AI推進","前半"],"missing_point":"逆接「しかし」の後ろの重視","kohai_emotion":"dizzy","kohai_confused_line":"えっ、じゃあ何で最初にわざわざ『たしかにAIはすごい』なんて褒めたんですか…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"あっ！！『あなたの言う通りAもいいよね。でも俺が言いたいのはBなんだ！』っていう前置きなんですね！！告白の『優しいけど友達でいよう』と同じ構造だ…（涙）！","kohai_solved_demo":"『もちろん〜だ。だが〜』のときも100%『だが』の後ろに線を引いて筆者の主張にします！","exp_gain":25},"summary_card":{"headline":"「たしかに・もちろん〜。しかし・だが〜」は後ろが100%本音！","core_rule":"譲歩部分（前半）だけを抜き出した選択肢は、共通テスト定番のダミー選択肢。","exam_trap_warning":"「一方で」「とはいえ」の後ろにも筆者の本音が来やすい！"}},{"lesson_id":"J-1_L02","topic_tag":"二項対立と抽象・具体","weakness_category":"jp_ronri_nikou","teach_mode":"choice_advice","kohai_question":"「言語は文化の器である。例えば日本語には雨の言葉が何百もある。」","kohai_initial_boke":"先輩！この文章のテーマは『日本の雨の多さと傘の文化』ですよね！？","choices":[{"id":"A","label":"「例えば」は具体例！その前にある「言語は文化の器（＝言葉はその国の文化や感性を映す）」が本題だよ！"},{"id":"B","label":"雨の言葉が何百もあるのが一番大事な主張だよ！"}],"teaching_rubric":{"canonical_explanation":"「例えば〜」以下は抽象的な主張をわかりやすくするための具体例であり、要約や要旨では抽象部分（言語は文化を映す器である）を残す。","required_concepts":["「例えば」は具体例","前の抽象的な主張を残す"],"acceptable_keywords":["具体例","抽象","例えば","前"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J1_02A","trigger_keywords_or_choice":["B"],"missing_point":"具体例の切り分け","kohai_emotion":"crying_laugh","kohai_confused_line":"それだと次の段落で『エスキモーには雪の言葉が多い』って出てきたら、雨の話と矛盾しません！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"おおお！！雨も雪も『その国の自然観や文化が言葉に表れる』っていう同じ主張の例えだったんですね！！抽象と具体のピラミッドが見えました！！","kohai_solved_demo":"要旨をまとめる時は『たとえば〜』をバッサリ削って、その前の1文を残せば完璧ですね！","exp_gain":25},"summary_card":{"headline":"「抽象（主張）→ 例えば（具体例）→ つまり（まとめ）」のサンドイッチ構造","core_rule":"具体例はイメージを掴むためのオマケ。設問の答えは「抽象」の層から作る。","exam_trap_warning":"「つまり・すなわち」の後ろは言い換えられた結論なので超重要！"}},{"lesson_id":"J-1_L03","topic_tag":"因果関係の逆転トラップ","weakness_category":"jp_ronri_inga","teach_mode":"fix_kohai_work","kohai_question":"「SNSで他者と比較しやすくなったため、自己肯定感が下がった。」","kohai_initial_boke":"先輩！『自己肯定感が下がったからSNSが普及した』って選択肢に『SNS』『自己肯定感』って単語が全部入ってたから選びました！","choices":[{"id":"A","label":"単語が同じでも「原因→結果」の矢印が逆になってるよ！SNSのせいで自己肯定感が下がったんだ！"},{"id":"B","label":"本文の単語が全部入ってるなら正解で間違いないよ！"}],"teaching_rubric":{"canonical_explanation":"共通テストで最も多い引っかけが「本文のキーワードを全部使いながら、原因と結果を逆にする」選択肢。矢印の向き（SNS比較 → 自己肯定感低下）を確認する。","required_concepts":["原因と結果の向きが逆","キーワード一致だけで選ばない"],"acceptable_keywords":["逆","原因","結果","矢印"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J1_03A","trigger_keywords_or_choice":["B"],"missing_point":"因果の矢印チェック","kohai_emotion":"dizzy","kohai_confused_line":"えっ、毎回『本文の言葉が入ってるのにバツになる』のって、この原因と結果のすり替えのせいだったんですか…！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"うわっ、現代文の最大の謎が解けました！！『〜ため（原因）→ 〜た（結果）』の矢印をメモして比べれば、ダミー選択肢に騙されなくなりますね！！","kohai_solved_demo":"『AとBを混ぜる』『程度を極端にする（すべて・絶対に）』も共通テストのダミー定番ですね！","exp_gain":25},"summary_card":{"headline":"現代文のダミー選択肢3大パターン：「①因果が逆 ②言い過ぎ（すべて・常に） ③書いてない」","core_rule":"単語の一致ではなく「主語と述語」「原因と結果の矢印」を1対1で照合する。","exam_trap_warning":"「〜ため」「〜によって」「〜から」を見たら即矢印（→）を書き込もう！"}},{"lesson_id":"J-1_L04","topic_tag":"比喩的表現の論理的言い換え","weakness_category":"jp_ronri_hiyu","teach_mode":"free_explain","kohai_question":"傍線部「現代人は情報の海で溺れかけている」とはどういうことか？","kohai_initial_boke":"先輩！『スマホを見ながら海で泳いで溺れそうになっていること』って書いたら0点でした！なんでですか！？","teaching_rubric":{"canonical_explanation":"「情報の海」＝膨大な情報、「溺れかけている」＝処理しきれず本当に必要な情報を見失い混乱している、と比喩を使わずに論理的な言葉に置き換える。","required_concepts":["海＝膨大な情報量","溺れる＝処理しきれず混乱・見失う"],"acceptable_keywords":["膨大","多い","選び","混乱","処理","比喩"]},"incomplete_pushbacks":[{"trap_id":"T_J1_04A","trigger_keywords_or_choice":["泳ぐ","海水浴","そのまま"],"missing_point":"比喩の言い換え","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、海って書いてあるのに海のこと書いちゃダメなんですか！？どう言い換えればいいんですか先輩！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"なるほどー！！比喩をそのまま使ったら説明にならないから、『海→膨大な量』『溺れる→処理できず混乱する』って普通の言葉に翻訳するんですね！！","kohai_solved_demo":"『心の壁』なら『相手への警戒心や隔たり』ですね！完全にコツを掴みました！！","exp_gain":25},"summary_card":{"headline":"「〜とはどういうことか」では、傍線部の比喩・難解語を別の言葉に置き換える","core_rule":"比喩をそのまま解答に書き写すと大幅減点になる。","exam_trap_warning":"言い換えのヒントは必ず傍線部の前後の文にある！"}}]},{"schema_version":"1.0.0","subject_id":"japanese","subject_name":"国語","stage_id":"J-2","stage_title":"現代文・小説＆記述の型","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値46・小説の心情を勝手に想像で盛る男","personality":"感動的な話にすぐ流され、本文に書いていない良い話を選んで引っかかる","opening_boke":"先輩！小説って『きっとこういう優しい気持ちだったんだろうな』って自分の心で感じ取ればいいんですよね！？"},"learning_objectives":["情景描写・身体反応から登場人物の本音を根拠をもって読み取れる","記述問題の文末呼応・心情変化の3点セットを正確に組み立てられる"],"lessons":[{"lesson_id":"J-2_L01","topic_tag":"情景描写と身体反応（セリフとのギャップ）","weakness_category":"jp_shosetsu_shigusa","teach_mode":"free_explain","kohai_question":"『「大丈夫だよ」と彼は笑ったが、机の下の拳は白く震えていた。』――彼の心情は？","kohai_initial_boke":"先輩！彼が『大丈夫だよ』って笑ってるんだから、本当に安心してるんですよね！？拳が震えてるのは寒いからっす！","teaching_rubric":{"canonical_explanation":"セリフや笑顔（表向きの強がり）と、無意識の身体反応（震える拳）が矛盾しているときは、身体反応のほうが本音（悔しさ・怒り・緊張を必死に堪えている）を表す。","required_concepts":["笑顔・大丈夫＝強がり","震える拳＝悔しさや怒り等を堪えている本音"],"acceptable_keywords":["強がり","本音","悔し","怒り","堪え","我慢","平気なふり"]},"incomplete_pushbacks":[{"trap_id":"T_J2_01A","trigger_keywords_or_choice":["寒い","安心","大丈夫"],"missing_point":"身体描写が本音を表す小説のルール","kohai_emotion":"dizzy","kohai_confused_line":"えっ、だって自分で『大丈夫』って言ってるのに嘘ついてるんですか？どこを見れば本音がわかるんですか！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！『セリフは嘘をつけても、体の反応（拳の震え・視線を逸らす）は嘘をつけない』んですね！！小説って探偵みたいで面白い！！","kohai_solved_demo":"さらに『冷たい雨が激しく降っていた』みたいな天気の描写も、主人公の悲しみや絶望を映す鏡なんですね！","exp_gain":25},"summary_card":{"headline":"小説の根拠は「セリフ」より「身体描写・情景描写」に表れる！","core_rule":"「口ではAと言いながら、体はBしている」という二面性・葛藤が設問になる。","exam_trap_warning":"天気描写を「単なる気候の説明」とする選択肢は即切り！"}},{"lesson_id":"J-2_L02","topic_tag":"心情変化の記述公式","weakness_category":"jp_shosetsu_henka","teach_mode":"choice_advice","kohai_question":"「父を嫌っていた主人公が、玄関のボロボロの作業靴を見て喉の奥が熱くなった」――心情変化の説明は？","kohai_initial_boke":"先輩！『父に感謝して泣きそうになった！』って変化後の気持ちだけ書けば満点ですよね！？","choices":[{"id":"A","label":"「以前は父を嫌っていたが（前）」「ボロボロの作業靴で苦労を知り（きっかけ）」「感謝と申し訳なさで胸が熱くなった（後）」の3点セットが必要だよ！"},{"id":"B","label":"変化後だけ書けば十分満点だよ！"}],"teaching_rubric":{"canonical_explanation":"心情の変化を問われたら、「変化前の心情」→「きっかけ（作業靴を見た）」→「変化後の心情」の3要素を必ず揃える。","required_concepts":["変化前＋きっかけ＋変化後の3要素"],"acceptable_keywords":["前","きっかけ","3","変化"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J2_02A","trigger_keywords_or_choice":["B"],"missing_point":"変化前ときっかけの欠落","kohai_emotion":"crying_laugh","kohai_confused_line":"うわーん、記述模試で『それだと最初から感謝してたのか変わったのかわからない』って半分しか点もらえませんでした…"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"なるほど！！『変化』を聞かれたら必ず『ビフォー（以前は〇〇）→ きっかけ（△△を機に）→ アフター（□□になった）』の3つを並べるんですね！！","kohai_solved_demo":"さらに『喉の奥が熱い』は『涙が出そうなほど感動・申し訳ない』っていう身体慣用表現ですね！完璧！！","exp_gain":30},"summary_card":{"headline":"心情変化＝「変化前」＋「きっかけ（象徴物）」＋「変化後」の3点セット！","core_rule":"ビフォーとアフターを対比させて書くと、採点基準の要素を漏れなく拾える。","exam_trap_warning":"「本文に書いていない過剰なハッピーエンド想像」に引っ張られないよう注意！"}},{"lesson_id":"J-2_L03","topic_tag":"記述問題の文末呼応","weakness_category":"jp_kijutsu_bunmatsu","teach_mode":"fix_kohai_work","kohai_question":"問：「『心の鎧を脱ぐ』とはどういうことか。」／答案：「素直に本音を話せるようになったから。」","kohai_initial_boke":"先輩！意味はバッチリ合ってますよね！？なんで先生が『ー2点！』って赤線引いたんですか！？","choices":[{"id":"A","label":"「どういうことか」と聞かれているのに「〜から（理由）」で終わってるからだよ！文末は「〜こと。」に直そう！"},{"id":"B","label":"「〜から。」のほうが自然だからそのままでいいよ！"}],"teaching_rubric":{"canonical_explanation":"設問が「どういうことか」なら文末は「〜こと。」、「なぜか」なら「〜から。 / 〜ため。」にするのが記述の絶対ルール。","required_concepts":["「どういうことか」→文末は「〜こと。」"],"acceptable_keywords":["こと","文末","から"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J2_03A","trigger_keywords_or_choice":["B"],"missing_point":"設問の型と文末の呼応","kohai_emotion":"question_marks","kohai_confused_line":"えっ、でも『どういうことですか？』って聞かれて『〜だからです！』って答えたら質問と噛み合ってないですか…？あ、たしかに！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"うわっ、ほんとだ！！『どういう【こと】か』→『〜こと。』、『【なぜ】か』→『〜から。』！書き始める前に解答欄の最後に『こと。』って先に書いちゃいます！！","kohai_solved_demo":"字数が足りないときも『熟語化（同じように思う→共感する）』でスッキリ調整できますね！","exp_gain":20},"summary_card":{"headline":"記述は「解答欄の最後に文末（こと。/ から。）を先に書く」だけで減点回避！","core_rule":"なぜか→〜から/ため。どういうことか→〜こと。どんな点か→〜点。","exam_trap_warning":"要素が合っていて文末だけで2点引かれるのは本当にもったいない！"}}]},{"schema_version":"1.0.0","subject_id":"japanese","subject_name":"国語","stage_id":"J-3","stage_title":"古文・単語・助動詞・敬語","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値45・古文単語を現代語のまま読む男","personality":"歴史的仮名遣いや敬語の方向で盛大にボケをかまし、平安時代を現代のギャグにしてしまう","opening_boke":"先輩！古文って『うつくし＝美しい』『やがて＝そのうち』『をかし＝変でウケる』ですよね！？余裕じゃないっすか！"},"learning_objectives":["現代語と意味がズレる最重要古語と歴史的仮名遣いを正確に訳せる","助動詞の接続・意味・識別（なむ・ぬ・なり）と敬意の方向を見抜ける"],"lessons":[{"lesson_id":"J-3_L01","topic_tag":"現代語と意味が違う基本古語","weakness_category":"jp_kobun_words","teach_mode":"free_explain","kohai_question":"「うつくしき稚児を見て、いとをかしと思ふ。やがて抱き上げたり。」","kohai_initial_boke":"先輩！『絶世の美女みたいな赤ちゃんを見て、マジウケるｗと思って、そのうち気が向いたら抱っこした』って訳しました！最高でしょ！","teaching_rubric":{"canonical_explanation":"うつくし＝「小さくてかわいらしい」、いとをかし＝「とても趣がある・素敵だ」、やがて＝「すぐに・そのまま」。","required_concepts":["うつくし＝かわいい","をかし＝趣深い・素敵","やがて＝すぐに・そのまま"],"acceptable_keywords":["かわいい","かわいらしい","趣","素敵","すぐ","そのまま"]},"incomplete_pushbacks":[{"trap_id":"T_J3_01A","trigger_keywords_or_choice":["ウケる","そのうち","美しい"],"missing_point":"古語の重要語義（うつくし・をかし・やがて）","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、赤ちゃん見て爆笑して放置するヤバい貴族になっちゃってます！？本当はどういう意味なんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うおぉっ！！『小さくてかわいい赤ちゃんを見て、なんて愛らしいんだろうと思って、すぐに抱き上げた』なんですね！！めっちゃ温かい話だった！！","kohai_solved_demo":"『おどろく＝目を覚ます・ハッと気づく』『ありがたし＝めったにない』も現代語に釣られないようにします！","exp_gain":25},"summary_card":{"headline":"古語3大トラップ：「うつくし＝かわいい」「をかし＝趣深い」「やがて＝すぐに」","core_rule":"現代語と全く同じ音なのに意味がズレている単語ほど入試で100%狙われる。","exam_trap_warning":"「つとめて＝早朝」「あさまし＝驚きあきれる」もセットで暗記！"}},{"lesson_id":"J-3_L02","topic_tag":"助動詞「なり」の識別（断定 vs 伝聞推定）","weakness_category":"jp_kobun_nari","teach_mode":"choice_advice","kohai_question":"「男もすなる日記」の『なる』と、「桜の花なり」の『なり』、どう見分ける？","kohai_initial_boke":"先輩！どっちも『〜である（断定）』で訳せばなんとなく通じますよね！？","choices":[{"id":"A","label":"「す（終止形）＋なる」は伝聞・推定（〜そうだ）、「花（体言）＋なり」は断定（〜である）と接続で見分けるんだよ！"},{"id":"B","label":"両方とも断定で全く同じだよ！"}],"teaching_rubric":{"canonical_explanation":"体言（名詞）・連体形＋「なり」＝断定（〜である）。終止形（ラ変には連体形）＋「なり」＝伝聞・推定（〜そうだ・〜音がする）。","required_concepts":["名詞/連体形＋なり＝断定","終止形＋なり＝伝聞・推定"],"acceptable_keywords":["終止形","伝聞","推定","名詞","体言","断定"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J3_02A","trigger_keywords_or_choice":["B"],"missing_point":"接続による「なり」の識別","kohai_emotion":"dizzy","kohai_confused_line":"えっ、だって『男もするである日記』って日本語としておかしくないですか…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！直前の形が『名詞や連体形なら断定』『動詞の終止形なら伝聞・推定（〜という・〜音がする）』なんですね！！『あんなり（あるなり）』も撥音便＋伝聞推定だ！","kohai_solved_demo":"『ぬ』の識別も『終止形なら完了（〜てしまった）、連体形なら打消（〜ない）』でバッチリ見分けられます！","exp_gain":30},"summary_card":{"headline":"古文識別の王道：「直前の活用形（または直後の形）」を見れば機械的に100%決まる","core_rule":"「なり」：終止形接続→伝聞推定 / 体言・連体形接続→断定。「なむ」：未然形接続→願望 / 連用形接続→強意＋推量 / 体言等→係助詞。","exam_trap_warning":"感覚で訳さず、必ず接続（活用形）を指差し確認しよう！"}},{"lesson_id":"J-3_L03","topic_tag":"敬語の方向と下二段「給ふ」","weakness_category":"jp_kobun_keigo","teach_mode":"free_explain","kohai_question":"会話文：『私、殿の御姿を見給へつ。』――この「給へ」は尊敬語？謙譲語？","kohai_initial_boke":"先輩！『給ふ』は尊敬語だから『私は殿のお姿を拝見なされた』ですよね！？（え、俺が偉いの？）","teaching_rubric":{"canonical_explanation":"「見る・聞く・思ふ」に付く下二段活用の「給ふ（給へ・給ふる）」は謙譲語であり、話し手から聞き手への敬意を表す（「拝見いたしました」）。","required_concepts":["下二段の「給ふ」は謙譲語","会話文で話し手→聞き手への敬意（〜いたします）"],"acceptable_keywords":["謙譲","下二段","聞き手","拝見","いたし","まし"]},"incomplete_pushbacks":[{"trap_id":"T_J3_03A","trigger_keywords_or_choice":["尊敬","ご覧になった"],"missing_point":"四段「給ふ（尊敬）」と下二段「給ふ（謙譲）」の違い","kohai_emotion":"confident_wrong","kohai_confused_line":"えっ、でも主語が『私』なのに尊敬語使ったら、俺が自分で自分のことリスペクトしてる変なヤツになりません！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"おおお！！四段の『給ふ』は尊敬だけど、下二段の『給へ・給ふる』は『〜いたします（謙譲語・聞き手への敬意）』っていう激レア変身キャラなんですね！！『見る・聞く・思ふ』＋『給へつ/き』を見たら即謙譲語にします！！","kohai_solved_demo":"しかも普通の尊敬語『給ふ』が地の文にあったら、主語が省略されてても『偉い人（帝・殿）が主語！』って特定できるんですよね！","exp_gain":30},"summary_card":{"headline":"「給ふ」の2種類：四段（給は・ひ・ふ・へ）＝尊敬 / 下二段（給へ・ふ・ふる）＝謙譲","core_rule":"尊敬語→主語を高める / 謙譲語→受け手を高める / 丁寧語→聞き手を高める。","exam_trap_warning":"「聞こえ給ふ（二方面敬語）」は「申し上げ（受け手へ）＋なさる（主語へ）」の2本矢印！"}}]},{"schema_version":"1.0.0","subject_id":"japanese","subject_name":"国語","stage_id":"J-4","stage_title":"漢文・返り点・句法・漢詩","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値44・置き字を無理やり音読する男","personality":"漢文の返り点や再読文字、反語を毎回現代語のイメージだけで読み飛ばしてしまう","opening_boke":"先輩！漢文なんて漢字だけ並べて雰囲気で読めばOKっすよね！？『兵皆走る』って『みんなでマラソン大会』でしょ！"},"learning_objectives":["返り点（レ点・一二点・上下点）と置き字（而・於・焉・矣）を正しく処理できる","再読文字・部分否定vs全部否定・反語・受身（為A所B）を正確に訳せる"],"lessons":[{"lesson_id":"J-4_L01","topic_tag":"重要漢語「走」「愛」と再読文字「未」","weakness_category":"jp_kanbun_words_saidoku","teach_mode":"free_explain","kohai_question":"「兵皆走」と「未知之（未レ知レ之）」","kohai_initial_boke":"先輩！『兵士はみんな走った。そしてまだこれを知ってる』って訳したら意味不明になりました！何でですか！？","teaching_rubric":{"canonical_explanation":"漢文の「走」は「逃げる（敗走する）」。また「未」は再読文字で1回目に「いまだ」、下から戻って2回目に「ず（〜ない）」と読む（まだこれを知らない）。","required_concepts":["走＝逃げる","未＝いまだ〜ず（2回目に「ず」で否定）"],"acceptable_keywords":["逃げ","いまだ","ず","知らない","再読","2回"]},"incomplete_pushbacks":[{"trap_id":"T_J4_01A","trigger_keywords_or_choice":["マラソン","知っている"],"missing_point":"「走＝逃げる」と再読文字の2回目「ず」","kohai_emotion":"dizzy","kohai_confused_line":"えっ、1回目に『いまだ』って読んだあと、最後にもう1回『ず』って読まなきゃダメなんですか！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"なるほどー！！『兵は皆逃げた』『まだこれを知らない』なんですね！！再読文字『未・将・当・宜・須・猶』は2回目の読みを絶対忘れないようにします！！","kohai_solved_demo":"『王愛其牛』の『愛』もLOVEじゃなくて『惜しむ（かわいそうに思う）』ですよね！バッチリです！","exp_gain":25},"summary_card":{"headline":"漢文の「走」は「逃げる」！再読文字（未・将・当・宜・須・猶）は2回読む","core_rule":"未（いまだ〜ず）/ 将（まさに〜んとす）/ 当・応（まさに〜べし）/ 宜（よろしく〜べし）/ 須（すべからく〜べし）。","exam_trap_warning":"書き下し文では、再読文字の読み（いまだ・ず等）はすべてひらがなで書く！"}},{"lesson_id":"J-4_L02","topic_tag":"部分否定 vs 全部否定","weakness_category":"jp_kanbun_hitei","teach_mode":"choice_advice","kohai_question":"「不必賢（不二必賢一）」と「必不賢」の違いがわかりません！","kohai_initial_boke":"先輩！どっちも『必ず』と『不（ない）』があるんだから『絶対に賢くない』で同じ意味ですよね！？","choices":[{"id":"A","label":"「不＋必」は「必ずしも〜とは限らない（部分否定）」、「必＋不」は「決して〜ない（全部否定）」と語順で意味が変わるよ！"},{"id":"B","label":"漢字の順番が違っても意味は同じだよ！"}],"teaching_rubric":{"canonical_explanation":"「不」が「必・常・皆・尽」の前に来るとそれを打ち消して部分否定（必ずしも〜とは限らない）になり、後ろに来ると全部否定（決して〜ない）になる。","required_concepts":["不必＝部分否定（必ずしも〜ない）","必不＝全部否定（決して〜ない）"],"acceptable_keywords":["部分否定","全部否定","必ずしも","語順"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_J4_02A","trigger_keywords_or_choice":["B"],"missing_point":"否定語の語順による意味変化","kohai_emotion":"question_marks","kohai_confused_line":"えっ、英語でも『not always（いつも〜とは限らない）』と『always not（いつも〜ない）』って違いましたよね！？漢文も同じなんですか！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"おおお！！英語の『not always』と完全に同じ原理ですね！！『不』が上なら部分否定（必ずしも〜とは限らない）、下なら全部否定（絶対に〜ない）！もう迷いません！！","kohai_solved_demo":"『不常（つねには〜ず＝いつもとは限らない）』vs『常不（つねに〜ず＝いつも〜ない）』も一発で見抜けます！","exp_gain":25},"summary_card":{"headline":"「不＋（必・常・皆）」＝部分否定 / 「（必・常・皆）＋不」＝全部否定","core_rule":"否定語「不」は、すぐ後ろに来る語を打ち消すと覚える。","exam_trap_warning":"書き下しで「かならずしも〜ず」「つねには〜ず」と「しも・は」が入るのが部分否定のサイン！"}},{"lesson_id":"J-4_L03","topic_tag":"反語（豈〜哉）と受身（為A所B）","weakness_category":"jp_kanbun_hango_ukemi","teach_mode":"free_explain","kohai_question":"「豈忘此恩哉（どうしてこの恩を忘れようか）」と「為敵所捕（敵に捕らえられる）」","kohai_initial_boke":"先輩！1つ目は『ねえ、忘れた？』って質問してて、2つ目は『敵のために捕まえた』ですよね！？","teaching_rubric":{"canonical_explanation":"「豈〜哉」は反語で「どうして忘れられようか、いや決して忘れない」と否定で言い切る。「為A所B（AのBする所と為る）」は受身で「AにBされる（敵に捕らえられた）」。","required_concepts":["豈〜哉＝反語（いや〜ない）","為A所B＝受身（AにBされる）"],"acceptable_keywords":["反語","忘れない","いや","受身","敵に","捕らえられ"]},"incomplete_pushbacks":[{"trap_id":"T_J4_03A","trigger_keywords_or_choice":["質問","敵のため"],"missing_point":"反語の否定結論と「為A所B」の受身構造","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、敵のために自分が捕まったらただのスパイじゃないですかｗ なんで『為』があるのに『ために』じゃないんですか？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"うわっ、スッキリ！！『為A所B（AのBするところとなる）』は100%受身（〜される）の決まり文句で、『豈〜哉』は『いや〜ない！』の反語なんですね！！漢文のボスキャラ2体まとめて撃破しました！！","kohai_solved_demo":"漢詩の『絶句＝4句（偶数句末＋七言1句目で押韻）』『律詩＝8句（3・4句と5・6句が対句）』もバッチリ覚えます！","exp_gain":30},"summary_card":{"headline":"漢文2大必出句法：「豈〜んや＝反語（いや〜ない）」「為A所B＝受身（AにBされる）」","core_rule":"反語訳では「〜だろうか、いや〜ない」まで否定の結論を必ず書き切る。","exam_trap_warning":"「為」を「ために」と読んだら加害者と被害者が逆になるので絶対注意！"}}]}]},{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stages":[{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stage_id":"Sc-1","stage_title":"中学理科・基礎4分野コンボ","target_level":"高校受験・基礎","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値39・オームの法則を逆にする男","personality":"実験や現象をイメージせず、数字だけ見つけて適当に掛け算・割り算する可愛い後輩","opening_boke":"先輩！並列回路って道が2本に分かれるんだから、抵抗も2倍に増えますよね！？あと質量保存の法則って気体が逃げたら軽くなるから嘘ですよね！"},"learning_objectives":["直列・並列回路の電流・電圧・合成抵抗の仕組みをイメージで説明できる","化学反応の質量保存（密閉vs開放）と地震のP波・S波、光合成・呼吸を理解する"],"lessons":[{"lesson_id":"Sc-1_L01","topic_tag":"並列回路の合成抵抗と電流","weakness_category":"sci_parallel_circuit","teach_mode":"free_explain","kohai_question":"6Ωの抵抗2本を並列につないだときの全体の抵抗は？","kohai_initial_boke":"先輩！6Ω が 2本だから、6 + 6 = 12Ω に増えますよね！！通りにくさ2倍！！","teaching_rubric":{"canonical_explanation":"並列つなぎは電流の通り道（車線）が増えるため、全体としては電流が流れやすくなり、抵抗は元の1本より小さくなる（1/R = 1/6 + 1/6 → R = 3Ω）。","required_concepts":["通り道が増えて流れやすくなるので抵抗は小さくなる","合成抵抗は 3Ω"],"acceptable_keywords":["通り道","流れやす","小さく","減る","3","半分","逆数"]},"incomplete_pushbacks":[{"trap_id":"T_Sc1_01A","trigger_keywords_or_choice":["12","増える","足す"],"missing_point":"並列では抵抗が減ること","kohai_emotion":"dizzy","kohai_confused_line":"えっ、高速道路のレーンが1本から2本に増えたら、車は渋滞しやすくなるんですか…？あ、逆か！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"うおぉっ！！『並列＝車線が増えて通りやすくなるから、抵抗（邪魔する力）は半分（3Ω）になる』んですね！！例えが天才すぎる！！","kohai_solved_demo":"さらに並列は『電圧がどこも同じ』、直列は『電流がどこも同じ（1本道だから）』！完璧にイメージできました！","exp_gain":25},"summary_card":{"headline":"直列＝「1本道で電流同じ・抵抗は和」、並列＝「車線増加で電圧同じ・抵抗は減る」","core_rule":"同じ抵抗 R が2つ並列なら R/2。一般的には 1/R = 1/R_1 + 1/R_2。","exam_trap_warning":"1/R を計算したあと最後にひっくり返す（逆数にする）のを忘れないように！"}},{"lesson_id":"Sc-1_L02","topic_tag":"地震のP波・S波と初期微動継続時間","weakness_category":"sci_earthquake_ps","teach_mode":"choice_advice","kohai_question":"震源からの距離が2倍になると、初期微動継続時間（P波とS波の到着時間の差）はどうなる？","kohai_initial_boke":"先輩！距離が2倍になったら揺れも弱まるから、時間も半分になるんですよね！？","choices":[{"id":"A","label":"P波（速い）とS波（遅い）の差は距離が離れるほど広がるから、初期微動継続時間も2倍（比例）になるよ！"},{"id":"B","label":"距離に関わらずいつも同じ時間だよ！"}],"teaching_rubric":{"canonical_explanation":"P波とS波の速さは一定なので、震源から遠ざかるほど2つの波の到着時間差（初期微動継続時間）は震源距離に比例して大きくなる。","required_concepts":["震源距離と初期微動継続時間は比例する（2倍なら2倍）"],"acceptable_keywords":["比例","2倍","広がる"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc1_02A","trigger_keywords_or_choice":["B"],"missing_point":"震源距離と時間差の比例関係","kohai_emotion":"question_marks","kohai_confused_line":"えっ、50m走と100m走で、ウサイン・ボルトと俺が走ったら、ゴールの時間差って2倍に広がりませんか…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！P波（ボルト）とS波（俺）の差は『走った距離に比例して広がる』から、震源距離が2倍なら初期微動継続時間も2倍なんですね！！わかりやすい！！","kohai_solved_demo":"だから逆に『初期微動継続時間が長い地点ほど、震源から遠い』って一発でわかりますね！","exp_gain":20},"summary_card":{"headline":"震源距離 ∝ 初期微動継続時間（P波とS波の到着時刻の差）","core_rule":"速さ＝距離÷時間。P波が最初（小さい揺れ＝初期微動）、S波があと（大きい揺れ＝主要動）。","exam_trap_warning":"「地震発生時刻」をグラフから逆算する問題は、距離と時間の傾きから引き算して求める！"}},{"lesson_id":"Sc-1_L03","topic_tag":"質量保存の法則（気体が発生する反応）","weakness_category":"sci_mass_conservation","teach_mode":"free_explain","kohai_question":"うすい塩酸に石灰石を加えて開いたビーカーで反応させたら、質量が軽くなりました！","kohai_initial_boke":"先輩！原子が消滅したから『質量保存の法則』って大ウソですよね！？世紀の大発見っす！！","teaching_rubric":{"canonical_explanation":"原子が消滅したわけではなく、発生した二酸化炭素（気体）が空気中に逃げたため、見かけ上軽くなっただけ。密閉容器で測れば質量は完全に保存される。","required_concepts":["発生した二酸化炭素（気体）が空気中に逃げた","密閉すれば質量は変わらない"],"acceptable_keywords":["気体","二酸化炭素","逃げ","密閉","原子は消えない"]},"incomplete_pushbacks":[{"trap_id":"T_Sc1_03A","trigger_keywords_or_choice":["消滅","嘘","軽くなるから"],"missing_point":"気体の逃散と密閉容器での保存","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、じゃあペットボトルのフタを閉めて同じ実験したら、本当に重さは1gも変わらないんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"マジかー！！発生した二酸化炭素が逃げただけで、逃げた気体の重さも足せば100%ピタリ同じなんですね！！逆に銅を加熱して重くなるのも、空気中の酸素がくっついたからか！！","kohai_solved_demo":"密閉容器なら、反応前と反応後の質量は絶対イコール！ノーベル賞の夢は諦めますｗ","exp_gain":20},"summary_card":{"headline":"化学反応で重さが変わったように見えたら「気体が出入りした」サイン！","core_rule":"反応の前後で原子の種類と数は絶対に変わらない（質量保存の法則）。","exam_trap_warning":"「フタをゆるめた瞬間に軽くなる理由」を記述させる問題が高校入試の超定番！"}}]},{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stage_id":"Sc-2","stage_title":"物理（力学・波動・電磁気）","target_level":"大学受験・理系二次/難関大","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値47・作用反作用で力が消えると思う男","personality":"物理の公式を丸暗記しようとするが、力の図示とエネルギー・運動量の区別で毎回大爆発する","opening_boke":"先輩！物理って『作用・反作用は大きさが同じで向きが逆だから、足したらゼロになって何も動かなくなる』んですよね！？"},"learning_objectives":["「つり合い（1物体）」と「作用・反作用（2物体）」を明確に区別し、運動方程式を立てられる","力学的エネルギー保存・運動量保存・ドップラー効果・コンデンサの電荷保存を正確に使い分けられる"],"lessons":[{"lesson_id":"Sc-2_L01","topic_tag":"力のつり合い vs 作用・反作用","weakness_category":"phys_action_reaction","teach_mode":"free_explain","kohai_question":"自分が壁を押すと、壁からも同じ力で押し返されます。なぜ力が打ち消し合ってゼロにならないの？","kohai_initial_boke":"先輩！＋F と −F だから足したら 0 ですよね！？じゃあ俺がスケート靴で壁を押しても後ろに滑らないはずじゃ…？","teaching_rubric":{"canonical_explanation":"つり合いの2力は「同じ1つの物体」に働くから打ち消し合うが、作用・反作用は「別の物体（壁に働く力 と 自分に働く力）」に働くため、打ち消し合わずにそれぞれの物体が動く。","required_concepts":["作用・反作用は「異なる2つの物体」に働く","同じ物体に働くつり合いとは別"],"acceptable_keywords":["別","異なる","違う物体","1つの物体","つり合い"]},"incomplete_pushbacks":[{"trap_id":"T_Sc2_01A","trigger_keywords_or_choice":["打ち消し","ゼロ","同じ"],"missing_point":"働く対象（主語）が別々である点","kohai_emotion":"dizzy","kohai_confused_line":"えっ、スケート靴で壁を押したら俺が後ろに動いたんですけど！？ゼロじゃないなら何で動いたんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『俺が壁を押す力』は【壁】に働いて、『壁が俺を押し返す力』は【俺】に働くから、別の物体に働いてて足し算しちゃダメなんですね！！天才すぎる！！","kohai_solved_demo":"だから運動方程式 ma = F を立てるときは『着目している1つの物体に働く力だけ』を書き出せば絶対に混ざらないんですね！","exp_gain":30},"summary_card":{"headline":"つり合い＝「1つの物体」に働く2力 / 作用・反作用＝「2つの別々の物体」に働く2力","core_rule":"力の図示では「触れているものからの力＋重力」を、着目物体ごとに分けて描く。","exam_trap_warning":"「重力と垂直抗力」はどちらも同じ物体に働くので「つり合い」であって作用・反作用ではない！"}},{"lesson_id":"Sc-2_L02","topic_tag":"遠心力と慣性系（見かけの力）","weakness_category":"phys_centrifugal","teach_mode":"choice_advice","kohai_question":"等速円運動している物体を「地上（静止系）から見た人」は、向心力と遠心力の両方を図に描く？","kohai_initial_boke":"先輩！中心向きの『向心力』と外向きの『遠心力』、両方描いてつり合わせるのが物理の定番ですよね！？","choices":[{"id":"A","label":"地上（静止系）から見るときは向心力だけ描いて「ma = F」！遠心力は一緒に回ってる人（非慣性系）から見たときだけ描くんだよ！"},{"id":"B","label":"地上から見ても両方描かないとつり合わないよ！"}],"teaching_rubric":{"canonical_explanation":"地上から見れば物体は中心向きに加速度 a = rω^2 で円運動しているため、働く力は向心力のみ（mrω^2 = F）。遠心力は回転する観測者から見た「見かけの力（慣性力）」なので両方を混ぜて描いてはいけない。","required_concepts":["地上からは向心力のみ（運動方程式）","遠心力は回転系に乗った観測者からのみ見える慣性力"],"acceptable_keywords":["観測者","回転","向心力だけ","見かけ","混ぜない"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc2_02A","trigger_keywords_or_choice":["B"],"missing_point":"観測者の視点（静止系 vs 回転系）の混同","kohai_emotion":"crying_laugh","kohai_confused_line":"うわーん、両方の力を描いたら合力が0になって『円運動しないでまっすぐ飛んでく』計算になっちゃいました！！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"うわっ、マジだ！！『地上から見て運動方程式（ma = F）』か『一緒に乗って遠心力とつり合い（0 = F - mrω^2）』のどっちか1つを選ばなきゃダメなんですね！！視点を統一するの超大事！！","kohai_solved_demo":"エレベーター内の問題も『外から見て ma = N - mg』か『中に乗って慣性力 ma を加えてつり合い』か、好きな1つに固定します！","exp_gain":30},"summary_card":{"headline":"向心力（地上から）と遠心力（乗って見る）を同じ図に絶対に混ぜない！","core_rule":"観測者を「外（運動方程式）」か「中（慣性力を加えてつり合い）」のどちらかに固定する。","exam_trap_warning":"遠心力の大きさは mrω^2 = mv^2/r で外向き。"}},{"lesson_id":"Sc-2_L03","topic_tag":"ドップラー効果（音源と観測者の向き）","weakness_category":"phys_doppler","teach_mode":"free_explain","kohai_question":"救急車が近づいてくるときと遠ざかるとき、音の高さ（振動数）はどう変わる？また公式 f' = {(V - v_o)/(V - v_s)} f の符号の覚え方は？","kohai_initial_boke":"先輩！近づいてくるときは音がデカくなって、振動数は低くなるんですよね！？あと符号のプラスマイナスが毎回ランダムになります！","teaching_rubric":{"canonical_explanation":"近づくときは音の波が押し縮められるため振動数は高く（大きく）なる。公式の向きは「音源Sから観測者Oへ向かう向きを正（＋）」にとれば、いつでも f' = {(V - v_o)/(V - v_s)} f のマイナス形で統一できる。","required_concepts":["近づくときは振動数が高くなる","S→Oの向きを正とすると常に (V - v_o)/(V - v_s)"],"acceptable_keywords":["高く","大きく","SからO","正","縮む"]},"incomplete_pushbacks":[{"trap_id":"T_Sc2_03A","trigger_keywords_or_choice":["低く","ランダム"],"missing_point":"近づく＝高音、および正の向きの定義","kohai_emotion":"dizzy","kohai_confused_line":"えっ、救急車のサイレンって『ピーポーピーポー』が近づくとき高くて、通り過ぎた瞬間に『フゥ〜ン』って低くなりません…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"そうだ！！近づくとき『高い』、遠ざかるとき『低い』ですね！！しかも『音源S → 観測者O の向きをプラス』って決めれば、分子も分母も両方引き算の『(V - v_o)/(V - v_s)』1本で全部解けるんですね！！神公式！！","kohai_solved_demo":"さらに風が吹いているときは、音の速さ V を『V + w（風向きに沿って）』に変えるだけですね！","exp_gain":25},"summary_card":{"headline":"ドップラー効果：「音源S → 観測者O の向きを＋」にすれば公式は常に引き算！","core_rule":"f' = {(V - v_o) / (V - v_s)} f。近づけば高音（f' > f）、遠ざかれば低音（f' < f）で検算する。","exam_trap_warning":"壁で反射する問題は「壁がまず観測者になり、次に壁が音源になる」2段階に分ける！"}},{"lesson_id":"Sc-2_L04","topic_tag":"コンデンサの「電池をつないだまま」vs「切り離す」","weakness_category":"phys_capacitor","teach_mode":"choice_advice","kohai_question":"コンデンサを充電したあと「電池から切り離して」極板の間隔を2倍に広げたとき、変わらない物理量はどれ？","kohai_initial_boke":"先輩！電池と繋いでたときと同じで、電圧 V が一定に保たれるんですよね！？","choices":[{"id":"A","label":"電池を切り離したら電気の逃げ道がないから「電気量 Q（電荷）」が一定！電圧 V が一定なのは電池を繋いだままのときだよ！"},{"id":"B","label":"いつでも電圧 V が一定だよ！"}],"teaching_rubric":{"canonical_explanation":"電池を切り離すと極板が孤立するため電気量 Q が保存（一定）される。逆に電池を繋いだままなら電圧 V が電池の起電力で一定に保たれる。","required_concepts":["切り離す→電気量 Q 一定","つないだまま→電圧 V 一定"],"acceptable_keywords":["Q","電気量","電荷","孤立","一定"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc2_04A","trigger_keywords_or_choice":["B"],"missing_point":"孤立部分の電荷保存則","kohai_emotion":"question_marks","kohai_confused_line":"えっ、でも電池を外しちゃったら、極板に溜まったプラスやマイナスの電気ってどこにも逃げていけないですよね…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおお！！『切り離す＝孤立＝電気量 Q が一定』『つないだまま＝電池が支配＝電圧 V が一定』ですね！！これさえ押さえれば Q = CV と C = εS/d でエネルギーの変化まで全部出せますね！！","kohai_solved_demo":"さらにスイッチを閉じた後の回路では『孤立した島（閉じた部分）の電気量の総和が保存される』式を立てれば100%解けます！","exp_gain":30},"summary_card":{"headline":"コンデンサの2大ルール：「つないだまま→V一定」「切り離す→Q一定」","core_rule":"間隔 d を2倍にすると容量 C = εS/d が半分になる。Q一定なら V = Q/C は2倍、エネルギー U = Q^2/(2C) も2倍。","exam_trap_warning":"静電エネルギーが増えた分は、極板を引き離すのに外力がした仕事に等しい！"}}]},{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stage_id":"Sc-3","stage_title":"化学（理論・無機・有機）","target_level":"大学受験・理系二次/難関大","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値48・モル計算の掛け算と割り算を逆にする男","personality":"mol の概念でよく迷子になり、中和滴定や平衡移動で逆の答えを出してしまう後輩","opening_boke":"先輩！標準状態で 22.4 L が 1 mol なんだから、44.8 L の気体は『44.8 × 22.4』で 1000 mol くらいですよね！？"},"learning_objectives":["物質量(mol)と質量・気体の体積(22.4L)・粒子数・状態方程式(PV=nRT)を正確に計算できる","ルシャトリエの原理（化学平衡の移動）と酸化還元・有機化合物の構造決定の要点を押さえる"],"lessons":[{"lesson_id":"Sc-3_L01","topic_tag":"モル(mol)計算と単位の考え方","weakness_category":"chem_mol_calc","teach_mode":"free_explain","kohai_question":"標準状態で 44.8 L の二酸化炭素は何 mol で、質量は何 g？（CO_2 の分子量＝44）","kohai_initial_boke":"先輩！44.8 × 22.4 mol で、質量はそれを 44 で割ればいいんですよね！？（数字がエグい…）","teaching_rubric":{"canonical_explanation":"1 mol ＝ 22.4 L/mol なので、体積を 22.4 で「割る」と 44.8 ÷ 22.4 = 2.0 mol。質量は 44 g/mol に 2.0 mol を「掛けて」88 g になる。","required_concepts":["44.8 ÷ 22.4 = 2.0 mol","44 × 2.0 = 88 g"],"acceptable_keywords":["割る","2","88","掛ける","22.4"]},"incomplete_pushbacks":[{"trap_id":"T_Sc3_01A","trigger_keywords_or_choice":["掛ける22.4","1000"],"missing_point":"単位 [L/mol] に基づく割り算・掛け算","kohai_emotion":"dizzy","kohai_confused_line":"うーん、22.4 を掛けるのか割るのかいつもわからなくなるんです…見分ける裏ワザないですか先輩！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"おおおっ！！『1箱(1mol)に 22.4 L 入ってるんだから、44.8 L あったら 44.8 ÷ 22.4 = 2箱(2 mol)』ですね！！単位を見ても [L] ÷ [L/mol] = [mol] だ！！感動しました！！","kohai_solved_demo":"2箱あって 1箱 44g なら 44 × 2 = 88g！もうモル計算で一生掛け算と割り算を間違えません！！","exp_gain":25},"summary_card":{"headline":"mol ＝「ダース（箱）」と同じ！すべての単位に「/mol（1箱あたり）」をつける","core_rule":"個数・質量・体積 → mol に直すときは「割る」。mol → 個数・質量・体積に直すときは「掛ける」。","exam_trap_warning":"標準状態（0℃, 1.013×10^5 Pa）以外の温度・圧力なら PV = nRT を使う！"}},{"lesson_id":"Sc-3_L02","topic_tag":"ルシャトリエの原理（化学平衡の移動）","weakness_category":"chem_le_chatelier","teach_mode":"choice_advice","kohai_question":"N_2 + 3H_2 ⇄ 2NH_3 + 92kJ（発熱反応）で、圧力を高くし、温度を下げると平衡はどう動く？","kohai_initial_boke":"先輩！温度を下げたら寒くなって反応が止まるから、アンモニア(NH_3)は減る方向（左）に行きますよね！？","choices":[{"id":"A","label":"変化を打ち消す方向（天邪鬼）に動くよ！高圧→分子数が減る右へ、低温→熱を出す発熱の右へ移動して NH_3 が増える！"},{"id":"B","label":"温度を下げると左（吸熱方向）に移動するよ！"}],"teaching_rubric":{"canonical_explanation":"平衡状態に変化を与えると、その変化を和らげる（打ち消す）方向へ移動する。圧力を上げれば気体分子数が減る方向（4mol→2mol＝右）、温度を下げれば熱を発生させる方向（発熱＝右）へ動く。","required_concepts":["高圧→気体分子数が減る方向（右）","低温→発熱反応の方向（右）"],"acceptable_keywords":["打ち消す","右","増える","発熱","分子数"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc3_02A","trigger_keywords_or_choice":["B"],"missing_point":"ルシャトリエの「変化を和らげる方向」","kohai_emotion":"question_marks","kohai_confused_line":"えっ、冷やされたら『寒っ！暖房つけよう！』って熱を出す方向に動きません…？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"ほんとだ！！『冷やされたら温めようとする（発熱＝右）』『押し潰されたらスリムになろうとする（分子数減＝右）』っていう天邪鬼なんですね！！めっちゃ覚えやすい！！","kohai_solved_demo":"さらに『触媒』を入れても平衡の位置自体は動かず、平衡に達するスピードが速くなるだけなんですよね！完璧！","exp_gain":25},"summary_card":{"headline":"ルシャトリエの原理＝「されたことと逆をやる天邪鬼」","core_rule":"温度↑→吸熱 / 温度↓→発熱 / 圧力↑→気体の係数の和が小さい方 / 濃度↑→その物質を減らす方。","exam_trap_warning":"「反応速度」と「平衡移動（収率）」を混同しない！高温の方が速いが、発熱反応の収率は低温の方が高い！"}},{"lesson_id":"Sc-3_L03","topic_tag":"酸化還元とイオン化傾向","weakness_category":"chem_redox","teach_mode":"free_explain","kohai_question":"「酸化された物質」は電子 e^- を受け取った？それとも失った？","kohai_initial_boke":"先輩！『酸素と結びつく＝プラスされる』なんだから、電子ももらってプラスされたんですよね！？","teaching_rubric":{"canonical_explanation":"電子 e^- はマイナスの電気を持っているため、電子を「失う（放出する）」と酸化数が上がり「酸化される」。逆に電子を受け取るのが「還元される」。","required_concepts":["電子はマイナスなので「失う（出す）」のが酸化"],"acceptable_keywords":["失","放出","出","渡す","マイナス","上がる"]},"incomplete_pushbacks":[{"trap_id":"T_Sc3_03A","trigger_keywords_or_choice":["もらう","受け取る","プラス"],"missing_point":"電子の負電荷による酸化数の変化","kohai_emotion":"dizzy","kohai_confused_line":"えっ、でも Na → Na^+ + e^- って酸化数が 0 から +1 に増えてますけど、電子 e^- は右辺に追い出されてません…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"ああっ！！電子は『マイナス』だから、マイナスを失う（捨てる）ほど自分の酸化数が＋に上がる＝酸化されるんですね！！『イオン化傾向が大きい金属ほど電子を捨てて（酸化されて）陽イオンになりやすい』も繋がりました！！","kohai_solved_demo":"ダニエル電池の亜鉛(Zn)が溶けるのも、銅(Cu)よりイオン化傾向が大きくて電子を放出（酸化）するからですね！","exp_gain":25},"summary_card":{"headline":"酸化＝「電子を失う（酸化数↑）」、還元＝「電子を受け取る（酸化数↓）」","core_rule":"酸化剤（相手を酸化して自分は還元＝e^-を受け取る）/ 還元剤（相手を還元して自分は酸化＝e^-を放出）。","exam_trap_warning":"「酸化剤は自分自身が還元される」ので言葉の主語に要注意！"}},{"lesson_id":"Sc-3_L04","topic_tag":"有機化学・不飽和度と構造決定（エステル・異性体）","weakness_category":"chem_organic_ester","teach_mode":"choice_advice","kohai_question":"分子式 C_4H_8O_2 のエステルをすべて書き出すとき、必ずチェックすべき組み合わせのコツは？","kohai_initial_boke":"先輩！とりあえず『R - COO - R'』の左と右に炭素を適当に振り分けて数えます！！（数え漏れ多発）","choices":[{"id":"A","label":"「H-COO-（ギ酸エステル・左のCは0個）」から順に左の炭素数を 0→1→2 と増やし、右の炭素の異性体（直鎖・枝分かれ）を数えるんだよ！"},{"id":"B","label":"ギ酸は入らないから左のCは1個以上から始めるよ！"}],"teaching_rubric":{"canonical_explanation":"エステル R-COO-R' は、カルボン酸側（RがHのギ酸も含む！）とアルコール側（R'はCが1個以上）の炭素数を規則正しく振り分けると数え漏れがない（C4H8O2なら4種類）。","required_concepts":["H-COO-（ギ酸エステル）を忘れない","左から順に炭素数を増やす"],"acceptable_keywords":["ギ酸","H-COO","順番","4"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc3_04A","trigger_keywords_or_choice":["B"],"missing_point":"ギ酸エステル（H-COO-R'）の見落とし","kohai_emotion":"crying_laugh","kohai_confused_line":"あっ！『ギ酸プロピル』と『ギ酸イソプロピル』を丸ごと忘れていつも2個足りなくなってました…しかもギ酸は銀鏡反応もしますよね！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うおぉっ！！左の R が『H（炭素0個＝ギ酸）』のケースからスタートすれば絶対に数え漏れないし、さらにギ酸エステルはアルデヒド基(-CHO)を持ってるから還元性（銀鏡反応）があるのも繋がりました！！","kohai_solved_demo":"さらに加水分解してヨードホルム反応が出たら『CH_3-CH(OH)-』か『エタノール』が確定しますね！有機の構造決定パズル楽しすぎる！！","exp_gain":30},"summary_card":{"headline":"エステル異性体数え上げ：「R-COO-R' の R=H（ギ酸エステル）からスタート！」","core_rule":"C_4H_8O_2 のエステルは ①ギ酸プロピル ②ギ酸イソプロピル ③酢酸エチル ④プロピオン酸メチルの4種。","exam_trap_warning":"ギ酸およびギ酸エステルは「-CHO 構造」を含むため還元性（銀鏡反応・フェーリング反応）を示す！"}}]},{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stage_id":"Sc-4","stage_title":"生物（細胞・代謝・遺伝・生態）","target_level":"大学受験・理系/共通","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値45・DNAとRNAの違いを雰囲気で流す男","personality":"暗記量が多そうで逃げ腰だが、ストーリーで仕組みを教えると一気に理解する後輩","opening_boke":"先輩！DNA と RNA って、名前が1文字違うだけで中身は全く同じコピーですよね！？"},"learning_objectives":["DNAとRNAの構造・役割（セントラルドグマ：複製→転写→翻訳）を正確に区別できる","呼吸・光合成のATP収支、伴性遺伝・組換え価、ホルモン・免疫の仕組みを説明できる"],"lessons":[{"lesson_id":"Sc-4_L01","topic_tag":"DNA vs RNA とセントラルドグマ","weakness_category":"bio_dna_rna","teach_mode":"free_explain","kohai_question":"DNAとRNAの違いと、「転写」「翻訳」とは何をしているのか教えて！","kohai_initial_boke":"先輩！DNAが直接リボソームに行ってタンパク質を作ればよくないですか？なんでわざわざ mRNA を作るんですか？","teaching_rubric":{"canonical_explanation":"DNAは「2本鎖・糖がデオキシリボース・塩基にT（チミン）」で核内に大事に保管される原本。RNAは「1本鎖・リボース・塩基にU（ウラシル）」で、DNAの情報を写し取って（転写）核外へ運び、リボソームでアミノ酸を並べてタンパク質を作る（翻訳）。","required_concepts":["DNA(2本鎖・T) vs RNA(1本鎖・U)","転写(DNA→mRNA)と翻訳(mRNA→タンパク質)"],"acceptable_keywords":["1本鎖","2本鎖","U","ウラシル","T","チミン","転写","翻訳","原本","コピー"]},"incomplete_pushbacks":[{"trap_id":"T_Sc4_01A","trigger_keywords_or_choice":["同じ","DNAが作る"],"missing_point":"DNAとRNAの構造・役割の違い","kohai_emotion":"dizzy","kohai_confused_line":"えっ、塩基のペアも A と T じゃなくて、RNA のときは A と何がくっつくんでしたっけ…？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"なるほどー！！DNAは核の金庫から出せない『門外不出の原本（2本鎖・T）』だから、持ち出し用のメモ（1本鎖・U）に『転写』して、リボソームでタンパク質に『翻訳』するんですね！！完璧にイメージできました！！","kohai_solved_demo":"だからDNAの塩基『TAC』を転写したら mRNA は『AUG（開始コドン）』になるんですね！","exp_gain":25},"summary_card":{"headline":"セントラルドグマ：DNA（原本：2本鎖・T）→[転写]→ mRNA（メモ：1本鎖・U）→[翻訳]→ タンパク質","core_rule":"コドン（mRNAの塩基3つ）が1つのアミノ酸を指定する。対応する tRNA はアンチコドンを持つ。","exam_trap_warning":"「DNAのAは20%」から「mRNAの塩基割合」を求める問題では、2本鎖のうち鋳型鎖（片方）だけが転写される点に注意！"}},{"lesson_id":"Sc-4_L02","topic_tag":"呼吸の3段階（解糖系・クエン酸回路・電子伝達系）","weakness_category":"bio_respiration","teach_mode":"choice_advice","kohai_question":"好気呼吸で酸素(O_2)が使われ、最も大量の ATP が作られる場所はどこ？","kohai_initial_boke":"先輩！最初の解糖系で酸素を使って一気に ATP を38個作ってるんですよね！？","choices":[{"id":"A","label":"最後の「電子伝達系（ミトコンドリア内膜）」だよ！解糖系は細胞質基質で酸素なしで2ATPしか作らないよ！"},{"id":"B","label":"解糖系で酸素を使って一番たくさん ATP を作るよ！"}],"teaching_rubric":{"canonical_explanation":"解糖系（細胞質基質・酸素不要・2ATP）→ クエン酸回路（ミトコンドリアマトリックス・CO2放出・2ATP）→ 電子伝達系（ミトコンドリア内膜・O2消費してH2O生成・約34ATP）。","required_concepts":["電子伝達系（ミトコンドリア内膜）で酸素を使い大量のATPを作る"],"acceptable_keywords":["電子伝達系","内膜","ミトコンドリア","最後"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc4_02A","trigger_keywords_or_choice":["B"],"missing_point":"呼吸の3段階の場所と酸素の使われ方","kohai_emotion":"question_marks","kohai_confused_line":"あれっ？でも発酵（無酸素）のときって解糖系だけで2ATP作って終わりですよね？じゃあ解糖系には酸素いらないのか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"おおお！！『解糖系（酸素なし・細胞質基質・2ATP）』『クエン酸回路（マトリックス・CO2発生・2ATP）』『電子伝達系（内膜・O2消費・約34ATP）』と整理したら一発で頭に入りました！！","kohai_solved_demo":"しかも呼吸商（RQ = 発生したCO2 ÷ 消費したO2）は、炭水化物なら 1.0、脂肪なら約 0.7 になるんですよね！","exp_gain":25},"summary_card":{"headline":"呼吸の3段階：解糖系（細胞質・2）→ クエン酸回路（マトリックス・2）→ 電子伝達系（内膜・約34）","core_rule":"酸素 O_2 が直接使われるのは最後の電子伝達系だけ（水 H_2O になる）。","exam_trap_warning":"H_2O の酸素原子がどこから来たか（呼吸では O_2 から、光合成の発生する O_2 は H_2O から）は超頻出！"}},{"lesson_id":"Sc-4_L03","topic_tag":"組換え価と連鎖（遺伝計算）","weakness_category":"bio_recombination","teach_mode":"free_explain","kohai_question":"配偶子の分離比が [AB] : [Ab] : [aB] : [ab] ＝ 4 : 1 : 1 : 4 だったとき、組換え価（％）はいくつ？","kohai_initial_boke":"先輩！組換わったのが 1 と 1 だから、そのまま 1 + 1 = 2% ですよね！？","teaching_rubric":{"canonical_explanation":"組換え価は「組換えによって生じた配偶子 ÷ すべての配偶子 × 100」。よって (1 + 1) ÷ (4 + 1 + 1 + 4) × 100 = 2 / 10 × 100 = 20% になる。","required_concepts":["全体 (4+1+1+4=10) で割る","2/10 × 100 = 20%"],"acceptable_keywords":["20","全体","割る","10","割合"]},"incomplete_pushbacks":[{"trap_id":"T_Sc4_03A","trigger_keywords_or_choice":["2%","2"],"missing_point":"全体の合計で割る割合計算","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、4 : 1 : 1 : 4 は『比』であって合計が 100 じゃないんですか！？（比の罠に引っかかった…）"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"危ねえー！！合計は 4+1+1+4 = 10 だから、2/10 = 20% なんですね！！さらに『この組換え価 20% がそのまま染色体上の遺伝子間の距離』として染色体地図が描けるんですよね！！","kohai_solved_demo":"しかも F2 の表現型比を出すときは、4:1:1:4 の配偶子表（10×10の表）を描いて [ab] の劣性ホモ (4/10)^2 = 16/100 から他の3つも一瞬で出せますね！","exp_gain":30},"summary_card":{"headline":"組換え価(％) ＝（組換わった配偶子の数 ÷ 全配偶子の数）× 100","core_rule":"検定交雑（aabb と交配）で生まれた子の表現型の比＝そのまま配偶子の比になる。","exam_trap_warning":"4:1:1:4 なら分母は 10！数字をそのまま％にしないこと！"}}]},{"schema_version":"1.0.0","subject_id":"science","subject_name":"理科","stage_id":"Sc-5","stage_title":"地学（地球・地質・気象・宇宙）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値42・夏は太陽に近いから暑いと思う男","personality":"身近な自然現象をすべて直感だけで説明しようとして、地学の常識にツッコまれる後輩","opening_boke":"先輩！日本が夏に暑いのは、地球が太陽に一番近づくからですよね！？あと冬は遠いから寒いんですよね！"},"learning_objectives":["季節変化の原因（地軸の傾き）、フェーン現象と前線の仕組みを正確に説明できる","プレート境界・地層の整合/不整合・HR図とハッブルの法則を理解する"],"lessons":[{"lesson_id":"Sc-5_L01","topic_tag":"季節変化の原因（地軸の傾き）","weakness_category":"geo_earth_tilt","teach_mode":"free_explain","kohai_question":"なぜ日本（北半球）では7〜8月が夏になり、1〜2月が冬になるの？","kohai_initial_boke":"先輩！地球は楕円軌道だから、夏に太陽へ大接近して、冬に遠くへ離れるからに決まってますよね！？","teaching_rubric":{"canonical_explanation":"原因は太陽との距離ではなく、地球の「地軸が約23.4°傾いたまま公転している」ため、太陽の南中高度と昼の長さが変化するから（実は北半球の夏はむしろ太陽から少し遠い）。","required_concepts":["地軸が23.4°傾いていること","太陽の南中高度と昼の長さが変わる"],"acceptable_keywords":["地軸","傾","23.4","南中高度","昼の長さ","距離ではない"]},"incomplete_pushbacks":[{"trap_id":"T_Sc5_01A","trigger_keywords_or_choice":["距離","近い","遠い"],"missing_point":"地軸の傾きによる南中高度の違い","kohai_emotion":"dizzy","kohai_confused_line":"えっ、じゃあもし太陽との距離が原因だったら、同じ時期に南半球のオーストラリアが『冬』になってるのっておかしくないですか…！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"うわっ、マジだ！！南半球は7月が冬ですもんね！！『地軸が23.4°傾いて公転してるから、太陽光が真上から強く当たる（南中高度が高い＋昼が長い）方が夏』なんですね！！目からウロコ！！","kohai_solved_demo":"さらに夏至の太陽の南中高度は『90° - 緯度 + 23.4°』で計算できますね！","exp_gain":25},"summary_card":{"headline":"季節が生じる唯一の原因＝「地軸が約23.4°傾いたまま公転していること」","core_rule":"太陽高度が高いほど単位面積あたりの受熱量が増え、さらに昼が長いほど暖まる。","exam_trap_warning":"実は地球が太陽に最も近づく（近日点）のは1月ごろ（北半球の冬）！"}},{"lesson_id":"Sc-5_L02","topic_tag":"フェーン現象（乾燥断熱減率と湿潤断熱減率）","weakness_category":"geo_foehn","teach_mode":"choice_advice","kohai_question":"湿った空気が山を越えて反対側に吹き降りるとき、なぜ元の気温より高くて乾燥した風になるの？","kohai_initial_boke":"先輩！山頂に近づくほど太陽に近くなるから、山の上で空気が温められて降りてくるんですよね！？","choices":[{"id":"A","label":"上りは雲ができて100mにつき0.5℃しか冷えないのに、下りは乾いて1℃ずつ温まるから差し引きで高温乾燥になるんだよ！"},{"id":"B","label":"山頂の太陽の熱で空気が温められるからだよ！"}],"teaching_rubric":{"canonical_explanation":"上昇時は水蒸気が凝結して潜熱を出すため 0.5℃/100m（湿潤断熱減率）しか気温が下がらず、雨を降らせたあと下降時は乾いた空気として 1.0℃/100m（乾燥断熱減率）で気温が上がるため、元の場所より高温・乾燥になる。","required_concepts":["上り（雲・0.5℃/100m減）と下り（乾燥・1.0℃/100m増）の差"],"acceptable_keywords":["0.5","1","乾燥","湿潤","潜熱","凝結"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc5_02A","trigger_keywords_or_choice":["B"],"missing_point":"断熱減率の差（0.5℃ vs 1.0℃）","kohai_emotion":"crying_laugh","kohai_confused_line":"いや山頂って雪が積もってるくらい寒いのに太陽で温まるわけないですよねｗ なんで下りだけ暑くなるんでしょう？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"おおお！！たとえば 1000m の山で雲ができながら上ると『-5℃』しか下がらないのに、乾いて下りると『+10℃』上がるから、差し引き『+5℃』も暑くなるんですね！！数字で一発納得！！","kohai_solved_demo":"さらに雲ができる高さ（持ち上げ凝結高度）までは上りも 1.0℃/100m で下がる点も計算で気をつけます！","exp_gain":25},"summary_card":{"headline":"フェーン現象＝「上りは0.5℃/100m減（雲あり）、下りは1.0℃/100m増（乾燥）」の差額！","core_rule":"凝結時に水蒸気が放出する「潜熱」が、下りた後の気温上昇の正体。","exam_trap_warning":"共通テスト地学では「高度ごとの気温グラフ」からフェーン後の気温を計算させる問題が定番！"}},{"lesson_id":"Sc-5_L03","topic_tag":"HR図（恒星の進化と表面温度・明るさ）","weakness_category":"geo_hr_diagram","teach_mode":"choice_advice","kohai_question":"横軸が表面温度、縦軸が明るさ（絶対等級）の『HR図』。右上の「赤色巨星」ってどんな星？","kohai_initial_boke":"先輩！赤くて右にあるんだから、表面温度が超熱くて小さい星ですよね！？","choices":[{"id":"A","label":"HR図は左が青白く高温、右が赤く低温！右上は「温度は低い（赤い）のに、体積がめちゃくちゃデカいから明るい星」だよ！"},{"id":"B","label":"右側ほど高温で小さい星だよ！"}],"teaching_rubric":{"canonical_explanation":"HR図は左ほど高温（青白）、右ほど低温（赤）、上ほど明るい。よって右上にある赤色巨星・超巨星は「表面温度は低いが、半径が極めて大きいため総光量が大きい（明るい）」星。","required_concepts":["左が高温・右が低温","上ほど明るい＝低温なのに明るいのは半径が巨大だから"],"acceptable_keywords":["左","低温","大きい","巨大","明るい"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_Sc5_03A","trigger_keywords_or_choice":["B"],"missing_point":"HR図の横軸の向き（左が高温）と色の関係","kohai_emotion":"dizzy","kohai_confused_line":"あれ？ガスコンロの炎って『赤い火』より『青い火』のほうが熱いですよね！？しかも左が O型・B型で青白いって習った気が…"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"うおぉっ！！『青い星＝高温（左）』『赤い星＝低温（右）』で、右上にいるのに明るいのは『表面積がバカデカい（巨星）から』なんですね！！逆に左下の白色矮星は『熱いのに小さいから暗い』のか！！","kohai_solved_demo":"さらに太陽みたいな主系列星は左上から右下に並んでいて、寿命を終えると右上の赤色巨星へ進化するんですよね！完璧！！","exp_gain":30},"summary_card":{"headline":"HR図の読み方：「左＝高温(青)・右＝低温(赤)」「上＝明るい・下＝暗い」","core_rule":"同じ温度でも上にあるほど半径が大きい（巨星）。左下が白色矮星。","exam_trap_warning":"「グラフの横軸が普通と逆（左が高温・右が低温）」という点が最大の引っ掛け！"}}]}]},{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stages":[{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stage_id":"So-1","stage_title":"地理（気候・地形・産業・統計）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値41・雨温図の7月と1月を見間違える男","personality":"地名やデータを暗記しようとするが、気候の仕組みや貿易・統計の読み取りで思い込みボケをする","opening_boke":"先輩！地理って『夏に雨が少なかったら南半球（冬だから）』で全部決まりですよね！？地中海？知らんなあ！"},"learning_objectives":["ケッペンの気候区分（特に地中海性気候 Cs とサバナ気候 Aw）を雨温図の気温・降水量から即断できる","大地形（新期/古期造山帯・安定陸塊）と世界の農牧業・工業立地を関連づけて説明できる"],"lessons":[{"lesson_id":"So-1_L01","topic_tag":"地中海性気候（Cs）と南半球の雨温図","weakness_category":"geo_cs_climate","teach_mode":"free_explain","kohai_question":"7月が最も暑く（25℃）、1月が最も寒い（8℃）のに、7〜8月の降水量がほぼゼロで冬に雨が降る雨温図。どこの気候？","kohai_initial_boke":"先輩！7月に雨が少なくて冬っぽいし、南半球のどっかですよね！？","teaching_rubric":{"canonical_explanation":"まず「気温の折れ線」が7月に山なら北半球（1月が山なら南半球）。北半球で「夏（7月）に乾燥し冬に雨が降る」のは亜熱帯高圧帯と偏西風の影響を受ける地中海性気候（Cs）。","required_concepts":["南北半球は「気温の曲線（7月が高いか1月が高いか）」で判定","夏に乾燥する温帯＝地中海性気候(Cs)"],"acceptable_keywords":["気温","7月","北半球","地中海性","Cs","夏に乾燥"]},"incomplete_pushbacks":[{"trap_id":"T_So1_01A","trigger_keywords_or_choice":["南半球","雨が少ないから"],"missing_point":"気温曲線による半球判定と Cs の特徴","kohai_emotion":"dizzy","kohai_confused_line":"えっ、でも7月の気温が25℃で1月が8℃なんですよね？7月が夏だから北半球なのに、なんで夏に雨が降らないんですか！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"aura_burst","praise_line":"おおおっ！！『南北半球は雨じゃなくて気温のカーブで見る』、そして『北半球で夏に雨が減る温帯＝地中海性気候(Cs)（オリーブ・ブドウの栽培！）』なんですね！！もう絶対騙されません！！","kohai_solved_demo":"夏に亜熱帯高圧帯（乾燥）が北上してきてカラカラになり、冬に偏西風が降りてきて雨が降るんですよね！完璧！！","exp_gain":25},"summary_card":{"headline":"雨温図の鉄則：「まず気温のカーブで北半球/南半球を決定」→ 次に降水量を見る！","core_rule":"夏に乾燥＝Cs（地中海性：sはsummer dry）。冬に乾燥＝Cw / Aw（wはwinter dry）。年中湿潤＝Cf。","exam_trap_warning":"南半球のシドニーやケープタウンは「1月が気温の山（夏）」になるので注意！"}},{"lesson_id":"So-1_L02","topic_tag":"大地形（新期造山帯 vs 古期造山帯 vs 安定陸塊）","weakness_category":"geo_orogenic_belt","teach_mode":"choice_advice","kohai_question":"険しい高山が多く、地震や火山が頻発し、石油や銅が採れやすい地形グループはどれ？","kohai_initial_boke":"先輩！昔のほうが恐竜とかいて激しかったはずだから『古期造山帯』ですよね！？","choices":[{"id":"A","label":"最近できたばかりの活発な「新期造山帯（アルプス・ヒマラヤ造山帯、環太平洋造山帯）」だよ！古期造山帯は石炭が多くてなだらか！"},{"id":"B","label":"古期造山帯のほうが火山や地震が多いよ！"}],"teaching_rubric":{"canonical_explanation":"新期造山帯（日本・アンデス・アルプス等）はプレート境界にあり険しく地震・火山が多く、石油・銅などを産出。古期造山帯（アパラチア・ウラル等）は浸食されてなだらかで石炭を産出。安定陸塊は鉄鉱石。","required_concepts":["新期造山帯＝地震・火山・険しい山・石油/銅","古期造山帯＝なだらか・石炭","安定陸塊＝鉄鉱石"],"acceptable_keywords":["新期造山帯","地震","火山","石油","石炭"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So1_02A","trigger_keywords_or_choice":["B"],"missing_point":"新期と古期の資源・特徴の対比","kohai_emotion":"question_marks","kohai_confused_line":"えっ、日本って地震も火山もめっちゃ多いですよね？じゃあ日本は新しい『新期造山帯』ってことか！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"level_up_flash","praise_line":"納得！！『新期＝若いから元気（地震・火山・険しい・石油/銅）』『古期＝おじいちゃんだから丸い（なだらか・石炭）』『安定陸塊＝超ベテランで動かない（鉄鉱石）』ですね！！イメージ完璧！！","kohai_solved_demo":"オーストラリアの西が安定陸塊（鉄鉱石）、東のグレートディバイディング山脈が古期造山帯（石炭）なのも一発で繋がりました！","exp_gain":25},"summary_card":{"headline":"大地形3兄弟：新期（地震・火山・石油/銅）/ 古期（なだらか・石炭）/ 安定陸塊（平坦・鉄鉱石）","core_rule":"資源の分布問題は「その場所が大地形のどれに属するか」を見るだけで半分以上解ける。","exam_trap_warning":"「オーストラリアの鉄鉱石＝西部（安定）、石炭＝東部（古期）」のセットは共通テスト超定番！"}},{"lesson_id":"So-1_L03","topic_tag":"統計の罠（「割合(％)」と「実数(量)」のすり替え）","weakness_category":"geo_stat_trap","teach_mode":"fix_kohai_work","kohai_question":"A国の『工業製品の輸出割合』が 90%、B国が 40% のとき、「工業製品の輸出【額】も A国 のほうが B国 より多い」と言える？","kohai_initial_boke":"先輩！90% と 40% なんだから、圧倒的に A国 のほうがたくさん輸出してるに決まってるじゃないですか！！","choices":[{"id":"A","label":"「割合(％)」だけ見ても「元の総輸出額（分母）」が書いてないから、輸出額が多いとは言い切れないよ！"},{"id":"B","label":"90% のほうが大きいから輸出額も絶対多いよ！"}],"teaching_rubric":{"canonical_explanation":"割合（％）が高くても、元の分母（総輸出額や総人口）が小さければ実数（量・金額）は少なくなる。共通テスト地理では割合と実数の混同が最大のワナ。","required_concepts":["割合だけでは分母の大きさがわからないため実数は比較できない"],"acceptable_keywords":["分母","総","割合","実数","規模","言えない"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So1_03A","trigger_keywords_or_choice":["B"],"missing_point":"割合と実数の区別","kohai_emotion":"crying_laugh","kohai_confused_line":"あっ！たとえば A国の総輸出額が 100億円で B国が 1兆円だったら、A国の 90%（90億円）より B国の 40%（4000億円）のほうが圧倒的に多いですね！！騙されたー！！"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"うわっ、危なかった！！グラフや表が出たらまず『単位が％（割合）なのか、トン・ドル（実数）なのか』を一番最初に見ます！！先輩マジ神！！","kohai_solved_demo":"人口密度や1人あたりGNIも『総量 ÷ 人口』の割り算だから、分母（人口）の大小を必ずチェックします！","exp_gain":25},"summary_card":{"headline":"地理統計の鉄則：「割合(％)」から「実数(量・額)」を断定する選択肢は100%疑う！","core_rule":"グラフを見たら、まずタイトルと縦軸・横軸の単位（％、人、トン、ドル）に丸をつける。","exam_trap_warning":"「成長率（伸び率）が高い＝規模が大きい」というすり替えも定番の引っ掛け！"}}]},{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stage_id":"So-2","stage_title":"日本史（古代〜近世の政治と文化）","target_level":"高校受験・文系二次","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値43・歴史の政策をノリと趣味で解釈する男","personality":"歴史の用語は少し覚えているが、「なぜその政策をやったのか（因果と目的）」をトンチンカンに解釈する","opening_boke":"先輩！秀吉の『刀狩り』って、秀吉が刀マニアで全国からコレクションを集めたかったんですよね！？"},"learning_objectives":["古代（律令・摂関・院政）〜中世（武家政治）〜近世（織豊・江戸幕府）の政策目的を論理的に説明できる","江戸の三大改革や文化（天平・国風・東山・元禄・化政）の特徴を区別できる"],"lessons":[{"lesson_id":"So-2_L01","topic_tag":"秀吉の「刀狩り」と「太閤検地」のセット目的","weakness_category":"his_jp_hideyoshi","teach_mode":"free_explain","kohai_question":"豊臣秀吉が「太閤検地」と「刀狩り」を行った本当の狙いは何？","kohai_initial_boke":"先輩！刀狩りは『秀吉が刀をコレクションしたかったから（あと大仏の釘にするため）』ですよね！？","teaching_rubric":{"canonical_explanation":"一揆を防ぐため農民から武器を取り上げると同時に、農民を土地に縛り付けて年貢を確実に徴収し、武士と農民の身分を分ける「兵農分離」を完成させることが目的。","required_concepts":["一揆の防止","兵農分離の完成","年貢の確実な徴収（検地とセット）"],"acceptable_keywords":["兵農分離","一揆","年貢","農民","武士","身分"]},"incomplete_pushbacks":[{"trap_id":"T_So2_01A","trigger_keywords_or_choice":["コレクション","大仏だけ","趣味"],"missing_point":"兵農分離と一揆防止という政治的本質","kohai_emotion":"dizzy","kohai_confused_line":"えっ、大仏の釘にするのは建前（表向きの理由）で、裏にガチの政治的な狙いがあったんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『刀を奪って一揆を防ぎ、検地で土地と年貢を確定させて、武士と農民をはっきり分ける（兵農分離）』ためだったんですね！！点と点が繋がりました！！","kohai_solved_demo":"さらに同じように『石高制（年貢を米の収穫量で統一）』で全国支配の基準を揃えたんですね！完璧！","exp_gain":25},"summary_card":{"headline":"太閤検地＋刀狩り ＝「兵農分離」の完成＆一揆の防止・年貢の安定確保","core_rule":"検地（土地と耕作者を登録）＋刀狩り（武器を取り上げて農民に専念させる）は必ずセットで捉える。","exam_trap_warning":"「大仏の釘やかすがいを作るため」は秀吉が民衆を納得させるための口実（表向きの理由）！"}},{"lesson_id":"So-2_L02","topic_tag":"「墾田永年私財法」と荘園の誕生","weakness_category":"his_jp_konden","teach_mode":"choice_advice","kohai_question":"743年の『墾田永年私財法』で、なぜ朝廷の公地公民制（律令制）が崩れていったの？","kohai_initial_boke":"先輩！みんなが開墾した畑が『ずっと国（天皇）のもの』になったから、貴族が怒って反乱したんですよね！？","choices":[{"id":"A","label":"逆だよ！開墾した土地を「永久に自分のもの（私有地）」にしてOKにしたから、貴族や寺社が大規模な私有地＝「荘園」を作り始めたんだ！"},{"id":"B","label":"開墾した土地をすべて国が没収したからだよ！"}],"teaching_rubric":{"canonical_explanation":"口分田が不足したため、723年の三世一身法を経て743年に墾田永年私財法を出し、新しく開墾した土地の永久私有を認めた。これにより有力貴族・寺社が広大な私有地（初期荘園）を広げ、公地公民の原則が崩れた。","required_concepts":["永久私有を認めた","有力貴族・寺社が荘園を拡大し公地公民が崩壊"],"acceptable_keywords":["私有","荘園","公地公民","自分のもの"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So2_02A","trigger_keywords_or_choice":["B"],"missing_point":"「私財法＝私有を認める法」の意味","kohai_emotion":"question_marks","kohai_confused_line":"あっ、『永年（ずっと）私財（自分の財産）にしていい法』って漢字にそのまま答え書いてありますね…ｗ"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"なるほどー！！三世一身法（3代まで）だと期限が来たら返さなきゃいけなくて誰も開墾しなかったから、永年私有を認めたら今度は公地公民が崩れて『荘園』が生まれたんですね！！歴史の因果マジ面白い！！","kohai_solved_demo":"さらにそこから荘園を守るために武士が生まれて鎌倉時代へ繋がっていくんですね！","exp_gain":25},"summary_card":{"headline":"班田収授の行き詰まり → 三世一身法 → 墾田永年私財法(743) → 荘園拡大・公地公民の崩壊","core_rule":"奈良時代（聖武天皇）に出された墾田永年私財法が、律令制崩壊の決定打となった。","exam_trap_warning":"「初期荘園（自力開墾・輸租田）」と後の「寄進地系荘園（不輸・不入の権）」の違いも押さえよう！"}},{"lesson_id":"So-2_L03","topic_tag":"江戸の三大改革と元禄・化政文化","weakness_category":"his_jp_edo_reforms","teach_mode":"choice_advice","kohai_question":"江戸時代の「元禄文化（17世紀末〜18世紀初）」と「化政文化（19世紀初）」、中心地と担い手の組み合わせが正しいのは？","kohai_initial_boke":"先輩！どっちも江戸時代の文化なんだから、両方とも江戸の武士が中心ですよね！？","choices":[{"id":"A","label":"元禄文化は「上方（大阪・京都）の町人（西鶴・松尾芭蕉・近松）」、化政文化は「江戸の町人（北斎・広重・十返舎一九）」が中心だよ！"},{"id":"B","label":"元禄が江戸の武士、化政が大阪の貴族だよ！"}],"teaching_rubric":{"canonical_explanation":"元禄文化（綱吉の頃）は経済の中心だった上方（京・大坂）の豪商など町人が担い手。化政文化（11代家斉の頃）は江戸へ文化の中心が移り、庶民（江戸の町人）まで広がった。","required_concepts":["元禄＝上方（京・大坂）中心","化政＝江戸中心の庶民文化"],"acceptable_keywords":["上方","大坂","江戸","町人"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So2_03A","trigger_keywords_or_choice":["B"],"missing_point":"上方（元禄）→江戸（化政）の文化移動","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、江戸時代に貴族がメインの文化なんてないし、井原西鶴とか近松門左衛門って大阪の人でしたよね…！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"おおお！！『元禄文化（上方：西鶴・近松・芭蕉・尾形光琳）』から『化政文化（江戸：歌麿・写楽・北斎・広重・滝沢馬琴）』へ中心が移動したんですね！！","kohai_solved_demo":"しかも三大改革も『享保（吉宗：上げ米・目安箱）→ 寛政（松平定信：棄捐令・囲米）→ 天保（水野忠邦：株仲間解散・人返し令）』の順番で整理できました！","exp_gain":25},"summary_card":{"headline":"元禄文化＝「上方（京・大坂）の町人」 / 化政文化＝「江戸の町人・庶民」","core_rule":"三大改革の順番は「キ（享保）→ カ（寛政）→ テ（天保）」＝「き・か・て」で暗記。","exam_trap_warning":"田沼意次（株仲間を推奨・重商主義）は三大改革には含まれない点に注意！"}}]},{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stage_id":"So-3","stage_title":"日本史（幕末〜近現代史）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値45・大政奉還と王政復古をごっちゃにする男","personality":"幕末や明治維新の出来事の「誰が何のためにやったか」の順番がごちゃ混ぜになっている後輩","opening_boke":"先輩！『大政奉還』も『王政復古の大号令』も、どっちも江戸時代が終わって明治になった合図なんだから同じことですよね！？"},"learning_objectives":["大政奉還（慶喜の延命策）と王政復古の大号令（倒幕派のクーデター）の政治的対立を理解できる","自由民権運動〜帝国憲法発布・条約改正（陸奥宗光・小村寿太郎）の流れを整理できる"],"lessons":[{"lesson_id":"So-3_L01","topic_tag":"大政奉還 vs 王政復古の大号令","weakness_category":"his_jp_taisei_osei","teach_mode":"free_explain","kohai_question":"1867年10月の「大政奉還」と12月の「王政復古の大号令」、何がどう違うの？","kohai_initial_boke":"先輩！徳川慶喜が『もう将軍やめるね！』って大政奉還したのに、なんでその2ヶ月後に『王政復古』とか言ってまた戦争（戊辰戦争）になったんですか！？","teaching_rubric":{"canonical_explanation":"大政奉還は慶喜が政権を朝廷に返しつつも実質的な最大大名として生き残ろう（諸侯会議の議長になろう）とした先手策。それに対し薩摩・長州らが慶喜の官職と領地を奪い完全に排除するために起こしたクーデターが王政復古の大号令。","required_concepts":["大政奉還＝慶喜側の生き残り・主導権維持策","王政復古＝薩長・岩倉らによる慶喜排除のクーデター"],"acceptable_keywords":["生き残り","慶喜","薩長","排除","クーデター","領地","官職"]},"incomplete_pushbacks":[{"trap_id":"T_So3_01A","trigger_keywords_or_choice":["同じ","仲直り"],"missing_point":"慶喜の意図と薩長の意図の対立","kohai_emotion":"dizzy","kohai_confused_line":"えっ、じゃあ慶喜は『やめる』って言いつつ、実はまだトップで居座る気満々だったんですか！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『朝廷に政権返すけど、朝廷に政治のノウハウないから俺（慶喜）が総理大臣やるわ！』っていう大政奉還の作戦を見抜いた薩長が、『いやお前はクビ＆領地没収（辞官納地）！』ってやったのが王政復古なんですね！！歴史ドラマすぎて鳥肌！！","kohai_solved_demo":"だから旧幕府軍がブチ切れて鳥羽・伏見の戦い（戊辰戦争）が始まったんですね！全部繋がりました！！","exp_gain":30},"summary_card":{"headline":"大政奉還（慶喜の生き残り策）→ 王政復古の大号令（薩長の慶喜排除クーデター）→ 戊辰戦争","core_rule":"小御所会議で慶喜に対する「辞官納地（官職と領地の返上）」が決定された。","exam_trap_warning":"「大政奉還によって徳川氏の領地もすべて失われた」は誤り（まだ持っていたから王政復古で奪った）！"}},{"lesson_id":"So-3_L02","topic_tag":"条約改正（治外法権撤廃と関税自主権回復）","weakness_category":"his_jp_treaty_revision","teach_mode":"choice_advice","kohai_question":"不平等条約の改正について、「領事裁判権（治外法権）の撤廃」と「関税自主権の完全回復」を成し遂げた外務大臣のペアは？","kohai_initial_boke":"先輩！どっちも伊藤博文が1人で全部解決したんですよね！？","choices":[{"id":"A","label":"1894年に日清戦争直前の陸奥宗光が「領事裁判権の撤廃」、1911年に日露戦争後の小村寿太郎が「関税自主権の回復」を達成したんだよ！"},{"id":"B","label":"大隈重信が領事裁判権、井上馨が関税自主権を回復したよ！"}],"teaching_rubric":{"canonical_explanation":"1894年（日清戦争直前）に陸奥宗光が日英通商航海条約で領事裁判権を撤廃し（関税も一部回復）、1911年に小村寿太郎が関税自主権を完全に回復した。","required_concepts":["陸奥宗光(1894)＝領事裁判権撤廃","小村寿太郎(1911)＝関税自主権の完全回復"],"acceptable_keywords":["陸奥宗光","小村寿太郎","1894","1911"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So3_02A","trigger_keywords_or_choice":["B"],"missing_point":"井上馨・大隈重信は失敗組である点","kohai_emotion":"crying_laugh","kohai_confused_line":"えっ、井上馨（鹿鳴館）と大隈重信（爆弾で負傷）は反対されて失敗した組でしたよね！？危ない危ないｗ"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"confetti_storm","praise_line":"完璧！！『領事裁判権撤廃＝陸奥宗光（1894年・日英通商航海条約）』→『関税自主権完全回復＝小村寿太郎（1911年・日米通商航海条約）』！日清・日露戦争のタイミングともバッチリリンクしました！","kohai_solved_demo":"さらに1886年のノルマントン号事件（外国人船長だけ助かり日本人乗客が溺死して軽い罰）が領事裁判権への怒りを爆発させたんですよね！","exp_gain":25},"summary_card":{"headline":"条約改正の順番：「陸奥宗光(1894：領事裁判権撤廃)」→「小村寿太郎(1911：関税自主権回復)」","core_rule":"井上馨（欧化政策・鹿鳴館）・大隈重信（外国人判事任用で反対）は改正に失敗。","exam_trap_warning":"ノルマントン号事件（1886）は陸奥宗光の改正より前（井上馨の時代）の出来事！"}}]},{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stage_id":"So-4","stage_title":"世界史（地域史・市民革命〜現代）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値44・同時代の世界の横のつながりが見えない男","personality":"国別の出来事をバラバラに覚えてしまい、革命や戦争の年代・地域を取り違える","opening_boke":"先輩！『産業革命』も『フランス革命』も、名前似てるし同じ年にフランスで起きたセットですよね！？"},"learning_objectives":["18世紀末〜19世紀のイギリス産業革命とアメリカ・フランス革命の地域と意味を区別できる","中国王朝・イスラム史・冷戦構造の転換点を正確に整理できる"],"lessons":[{"lesson_id":"So-4_L01","topic_tag":"イギリス産業革命 vs フランス革命","weakness_category":"his_w_revolutions","teach_mode":"free_explain","kohai_question":"「産業革命」と「フランス革命」、それぞれどこで起きて世界をどう変えたの？","kohai_initial_boke":"先輩！どっちも1789年にフランスで王様を倒して蒸気機関車を作ったんですよね！？","teaching_rubric":{"canonical_explanation":"産業革命は18世紀後半（1760年代〜）に「イギリス」で起きた技術・経済の革命（工場制機械工業・蒸気機関）。フランス革命は1789年に「フランス」で起きた政治・社会の革命（絶対王政打倒・人権宣言）。","required_concepts":["産業革命＝イギリス（技術・経済）","フランス革命(1789)＝フランス（政治・市民革命）"],"acceptable_keywords":["イギリス","フランス","1789","技術","蒸気","市民","人権宣言"]},"incomplete_pushbacks":[{"trap_id":"T_So4_01A","trigger_keywords_or_choice":["同じ","フランスで両方"],"missing_point":"イギリス産業革命とフランス革命の区別","kohai_emotion":"dizzy","kohai_confused_line":"あれっ？フランスがギロチンで騒いでる隣のイギリスでは、ワットが蒸気機関を改良して工場がバンバン建ってたんですね！？"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおお！！『イギリス＝経済・技術の産業革命（世界の工場）』と『フランス＝政治のフランス革命（自由・平等・人権宣言）』が同じ18世紀後半に同時進行していた『二重革命』なんですね！！横のつながり超わかりやすい！！","kohai_solved_demo":"そして1776年の『アメリカ独立宣言』で自由の波がフランスに飛び火して1789年のフランス革命になったんですね！","exp_gain":25},"summary_card":{"headline":"二重革命：イギリス「産業革命（1760年代〜：工場・蒸気）」＆ フランス「フランス革命（1789：人権宣言）」","core_rule":"イギリスが産業革命で圧倒的経済力をつけたため、後にナポレオンの大陸封鎖令にも耐え抜いた。","exam_trap_warning":"「フランスは18世紀末に産業革命を達成した」は誤り（フランスは1830年代〜）！"}},{"lesson_id":"So-4_L02","topic_tag":"冷戦の始まり（トルーマン＝ドクトリン〜NATO vs ワルシャワ）","weakness_category":"his_w_cold_war","teach_mode":"choice_advice","kohai_question":"第二次世界大戦後の冷戦で、アメリカ側の「マーシャル＝プラン（経済援助）」に対抗してソ連が作った経済組織はどれ？","kohai_initial_boke":"先輩！ソ連が作った経済組織って『ワルシャワ条約機構』ですよね！？","choices":[{"id":"A","label":"経済対抗は「コメコン（COMECON：経済相互援助会議）」だよ！ワルシャワ条約機構は NATO に対抗した「軍事同盟」だね！"},{"id":"B","label":"ワルシャワ条約機構が経済援助の組織だよ！"}],"teaching_rubric":{"canonical_explanation":"アメリカ側の経済援助がマーシャル＝プラン（対抗＝ソ連のコメコン）、軍事同盟がNATO（対抗＝ソ連のワルシャワ条約機構）、政治・情報組織がコミンフォルム。","required_concepts":["経済＝マーシャル・プラン vs コメコン","軍事＝NATO vs ワルシャワ条約機構"],"acceptable_keywords":["コメコン","経済","軍事","NATO"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So4_02A","trigger_keywords_or_choice":["B"],"missing_point":"経済（コメコン）と軍事（ワルシャワ）の混同","kohai_emotion":"question_marks","kohai_confused_line":"うわっ、毎回『コメコン』と『コミンフォルム』と『ワルシャワ条約機構』の3つがごちゃ混ぜになってたんです…"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"スッキリ整理できました！！『政治情報＝コミンフォルム』『経済＝コメコン（VSマーシャルプラン）』『軍事＝ワルシャワ条約機構（VS NATO）』ですね！！これでもう二度と間違えません！！","kohai_solved_demo":"さらに1962年のキューバ危機で核戦争寸前になってから、米ソ直通電話（ホットライン）ができて雪解け（緊張緩和）に向かうんですね！","exp_gain":25},"summary_card":{"headline":"冷戦の対抗カード：経済（マーシャル vs コメコン） / 軍事（NATO vs ワルシャワ条約機構）","core_rule":"コミンフォルム（1947）は共産党の情報局（政治）。","exam_trap_warning":"1955年のワルシャワ条約機構結成は、西ドイツのNATO加盟が直接のきっかけ！"}}]},{"schema_version":"1.0.0","subject_id":"social","subject_name":"社会","stage_id":"So-5","stage_title":"公共・政治経済（憲法・経済・国際）","target_level":"大学受験・共通テスト（文理共通）","kohai_profile":{"name":"マナブ（後輩）","initial_iq_label":"偏差値43・円安と円高の得する人を逆にする男","personality":"ニュースでよく聞く政治・経済用語の意味を雰囲気で逆に覚えてしまっている後輩","opening_boke":"先輩！『円安』ってことは円の値段が安いんだから、海外旅行に行ったときにいっぱい買えてお得ですよね！？"},"learning_objectives":["為替相場（円高・円安）の輸出入・物価への影響を論理的に説明できる","日本銀行の金融政策（買いオペ/売りオペ）と衆議院の優越を正確に理解する"],"lessons":[{"lesson_id":"So-5_L01","topic_tag":"円高・円安と輸出入のメリット・デメリット","weakness_category":"pol_exchange_rate","teach_mode":"free_explain","kohai_question":"1ドル＝100円 から 1ドル＝150円 になったとき、これは円高？円安？また輸出企業（自動車メーカー等）と海外旅行者はどっちが得する？","kohai_initial_boke":"先輩！100円が150円に数字が増えたんだから『円高』ですよね！？あと海外旅行がお得になるっす！！","teaching_rubric":{"canonical_explanation":"同じ1ドルを買うのに100円から150円も必要になった＝「円の価値が下がった＝円安」。円安になると日本の輸出企業はドルで稼いだお金を多くの円に換えられる（海外でも安く売れる）ため輸出に有利だが、輸入品や海外旅行は高くなり不利。","required_concepts":["100円→150円は「円安」","円安＝輸出企業に有利・輸入や海外旅行には不利"],"acceptable_keywords":["円安","価値が下が","輸出","有利","輸入","高い"]},"incomplete_pushbacks":[{"trap_id":"T_So5_01A","trigger_keywords_or_choice":["円高","海外旅行が得"],"missing_point":"円の価値の低下＝円安、および輸出入への影響","kohai_emotion":"dizzy","kohai_confused_line":"えっ、1ドル100円が150円になって数字が大きくなってるのに『円安』なんですか！？感覚と逆すぎて混乱します！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"aura_burst","praise_line":"おおおっ！！『1ドルというリンゴを買うのに、昨日まで100円で買えたのに今日150円払わなきゃいけない＝円の力が弱くなった（円安）』なんですね！！だから海外旅行は高くなって損、逆にアメリカの1万ドルを日本円に両替できる輸出企業（トヨタ等）は大儲け！！完璧に理解しました！！","kohai_solved_demo":"じゃあ輸入品のパンやガソリンが安くなるのは逆の『円高（1ドル80円など）』のときですね！もう一生迷いません！！","exp_gain":30},"summary_card":{"headline":"1ドル＝100円→150円は「円安」（円の価値↓）／ 輸出企業◎・輸入/海外旅行×","core_rule":"「1ドルを買うのに必要な円が増える＝円の価値が安くなった＝円安」。","exam_trap_warning":"「円高＝数字が大きくなる」という錯覚が全受験生最大の罠！"}},{"lesson_id":"So-5_L02","topic_tag":"日本銀行の公開市場操作（買いオペ vs 売りオペ）","weakness_category":"pol_boj_ope","teach_mode":"choice_advice","kohai_question":"不況（デフレ）のときに景気を良くするため、日本銀行が銀行から国債を買い取って世の中にお金を流す政策はどっち？","kohai_initial_boke":"先輩！世の中にお金を『売る』んだから『売りオペレーション』ですよね！？","choices":[{"id":"A","label":"「国債を主語」にするのがルール！日銀が国債を「買う」のが買いオペ（→代金としてお金が世の中に出て景気刺激）だよ！"},{"id":"B","label":"お金を売るから売りオペレーションだよ！"}],"teaching_rubric":{"canonical_explanation":"公開市場操作（オペレーション）の「買い・売り」は常に日銀が「国債（手形）」を買うか売るかで決まる。不況時は国債を「買う（買いオペ）」ことで市場に資金を供給し、金利を下げて投資を促す。","required_concepts":["主語は「国債」","不況時は買いオペ（国債を買いお金を流す）"],"acceptable_keywords":["買いオペ","国債","買う","お金を流す"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So5_02A","trigger_keywords_or_choice":["B"],"missing_point":"オペレーションの対象が「国債」であること","kohai_emotion":"question_marks","kohai_confused_line":"えっ、じゃあ日銀が国債を『買う』ってことは、代わりに『現金（日本円）』を銀行に渡すから、世の中のお金が増えるってことですね！？"}],"awakening_reaction":{"kohai_emotion":"sparkle_eyes","effect_type":"level_up_flash","praise_line":"なるほどー！！『買う・売るの対象は国債（債券）』なんですね！！不況のときは『買いオペ（国債買って、お金を流す）』、インフレ（過熱）のときは『売りオペ（国債売って、お金を回収する）』！スッキリしました！！","kohai_solved_demo":"さらに政府（国）がやる『財政政策（公共事業・減税）』と、日銀がやる『金融政策（買いオペ・金利調整）』の区別も完璧です！","exp_gain":25},"summary_card":{"headline":"日銀の金融政策：「不況→買いオペ（国債を買いお金を流す）」「好況(インフレ)→売りオペ」","core_rule":"買いオペ → 市中の資金増 → 金利低下 → 企業投資・個人消費増 → 景気回復。","exam_trap_warning":"「政府が買いオペを行う」は誤り（行うのは中央銀行＝日本銀行）！"}},{"lesson_id":"So-5_L03","topic_tag":"衆議院の優越（議決の条件の違い）","weakness_category":"pol_shugiin_yuetsu","teach_mode":"choice_advice","kohai_question":"衆議院と参議院で議決が異なったとき、両院協議会を開いても一致しなければ「衆議院の議決がそのまま国会の議決になる」もの（再可決2/3が不要なもの）は？","kohai_initial_boke":"先輩！法律案も予算も内閣総理大臣の指名も、全部同じルールで『衆議院の3分の2で再可決』が必要ですよね！？","choices":[{"id":"A","label":"「法律案」だけは衆議院の3分の2以上の再可決が必要！でも「予算・条約の承認・総理大臣の指名」は衆議院の議決がそのまま通るんだよ！"},{"id":"B","label":"予算も法律案も全部 3分の2以上の再可決が必要だよ！"}],"teaching_rubric":{"canonical_explanation":"「法律案」のみ、参議院が否決または60日以内に議決しないときに衆議院の出席議員3分の2以上の賛成で再可決が必要。一方、「予算」「条約」「内閣総理大臣の指名」は期限経過・両院協議会不調のあと自動的に衆議院の議決が国会の議決となる。","required_concepts":["法律案のみ 2/3 の再可決が必要","予算・条約・首相指名は自動的に衆議院の議決が通る"],"acceptable_keywords":["法律案","3分の2","予算","条約","総理"],"choice_id":"A"},"incomplete_pushbacks":[{"trap_id":"T_So5_03A","trigger_keywords_or_choice":["B"],"missing_point":"法律案と予算・条約・首相指名の区別","kohai_emotion":"crying_laugh","kohai_confused_line":"あっ、もし総理大臣を決めるのに 3分の2 必要だったら、ずっと総理が決まらなくて国が止まっちゃいますよね！納得！！"}],"awakening_reaction":{"kohai_emotion":"super_awakened","effect_type":"confetti_storm","praise_line":"うおぉっ！！『法律案＝60日・再可決2/3が必要』、『予算・条約＝30日・自然成立（再可決不要）』、『総理大臣の指名＝10日・そのまま衆議院の議決』ですね！！日数（60・30・10）までセットで覚えました！先輩、全5教科制覇っすね！！","kohai_solved_demo":"さらに憲法改正の発議だけは『各議院の総議員の3分の2以上』で、衆議院の優越が一切ない対等なルールですよね！完璧！！","exp_gain":35},"summary_card":{"headline":"衆議院の優越：「法律案だけ 2/3 再可決が必要（60日）」／ 予算・条約(30日)・首相指名(10日)は自然優先","core_rule":"さらに「予算の先議権」と「内閣不信任決議」は衆議院のみに認められた権限。","exam_trap_warning":"「憲法改正の発議」には衆議院の優越がない（衆参両院とも総議員の2/3以上＋国民投票過半数）！"}}]}]}];
+</script>
+<script>
+/* === LOGIC START === */
+const KohaiLogic = (() => {
+// テキスト正規化：空白・句読点・記号を除去し、カタカナをひらがなへ寄せる（ツッコミ漫才と同一方式）
+function normalizeText(s) {
+  if (s == null) return "";
+  let t = String(s);
+  t = t.replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
+  t = t.replace(/[\s　、。，．・：；「」『』（）()［］<>＜＞!?！？〜~～…‥"”'’`｜|/／\-ー―_]/g, "");
+  return t.toLowerCase();
+}
+
+// 判定に使うキーワード：正規化＋重複除去し、1文字だけの汎用語は（他に候補がある場合）除外する
+function usableKeywords(lesson) {
+  const raw = [...new Set((lesson.teaching_rubric?.acceptable_keywords || []).map(normalizeText).filter(Boolean))];
+  const long = raw.filter((a) => a.length >= 2);
+  return long.length ? long : raw;
+}
+// 自由記述の正解しきい値：使えるキーワードが2種以下なら1種、3種以上なら2種の充足を要求
+function freeNeed(lesson) {
+  return usableKeywords(lesson).length <= 2 ? 1 : 2;
+}
+
+// 自由記述のトラップ照合（acceptable キーワードに内包される trigger は誤爆防止で除外）
+function matchTrapByText(lesson, normalizedInput) {
+  const acceptN = (lesson.teaching_rubric?.acceptable_keywords || []).map(normalizeText).filter(Boolean);
+  for (const trap of lesson.incomplete_pushbacks || []) {
+    for (const trig of trap.trigger_keywords_or_choice || []) {
+      const tn = normalizeText(trig);
+      if (!tn) continue;
+      if (!normalizedInput.includes(tn)) continue;
+      if (acceptN.some((a) => a.includes(tn) && normalizedInput.includes(a))) continue;
+      return trap;
+    }
+  }
+  return null;
+}
+
+function judgeFreeText(lesson, input) {
+  const n = normalizeText(input);
+  if (!n) return { result: "fallback", trap: null };
+  const trap = matchTrapByText(lesson, n);
+  if (trap) return { result: "trap", trap };
+  const hits = usableKeywords(lesson).filter((a) => n.includes(a)).length;
+  if (hits >= freeNeed(lesson)) return { result: "correct", trap: null, hits };
+  return { result: "fallback", trap: null, hits };
+}
+
+function findChoice(lesson, choiceId) {
+  return (lesson.choices || []).find((c) => c.id === choiceId) || null;
+}
+
+// 選択式のトラップ照合：trigger に選択肢IDかラベルが含まれていればそのトラップ
+function matchTrapByChoice(lesson, choiceId) {
+  const ch = findChoice(lesson, choiceId);
+  const labelN = ch ? normalizeText(ch.label) : "";
+  for (const trap of lesson.incomplete_pushbacks || []) {
+    for (const trig of trap.trigger_keywords_or_choice || []) {
+      if (trig === choiceId) return trap;
+      const tn = normalizeText(trig);
+      if (tn && labelN && tn === labelN) return trap;
+    }
+  }
+  return null;
+}
+
+function judgeChoice(lesson, choiceId) {
+  if (lesson.teaching_rubric && choiceId === lesson.teaching_rubric.choice_id) {
+    return { result: "correct", trap: null };
+  }
+  const trap = matchTrapByChoice(lesson, choiceId);
+  if (trap) return { result: "trap", trap };
+  return { result: "fallback", trap: null };
+}
+
+// コース絞込（プロトタイプの matchesCourse と同一規則）
+function matchesCourse(stage, filter) {
+  if (!filter || filter === "all") return true;
+  const lvl = stage.target_level || "";
+  if (filter === "junior") return lvl.includes("高校受験");
+  if (filter === "bunkei") {
+    return lvl.includes("共通テスト") || lvl.includes("文系") ||
+      stage.subject_id === "english" || stage.subject_id === "japanese" || stage.subject_id === "social";
+  }
+  if (filter === "rikei") {
+    return lvl.includes("共通テスト") || lvl.includes("理系") ||
+      stage.subject_id === "english" || stage.subject_id === "math" || stage.subject_id === "science";
+  }
+  return true;
+}
+
+// 偏差値：初期35、獲得EXPの総量に対する割合で最大75まで上昇（プロトタイプの到達点を踏襲）
+function deviationFromExp(exp, totalExp) {
+  if (!totalExp || totalExp <= 0) return 35;
+  return Math.min(75, Math.round(35 + (Math.max(0, exp) / totalExp) * 40));
+}
+// ランク名（プロトタイプの getRankLabel を踏襲）
+function rankLabel(dev) {
+  if (dev >= 70) return "偏差値70+ 神後輩";
+  if (dev >= 60) return "難関大レベル";
+  if (dev >= 50) return "共通テスト覚醒";
+  if (dev >= 42) return "基礎脱出中";
+  return "おバカ見習い";
+}
+
+function totalExpOf(subjects) {
+  let total = 0;
+  for (const s of subjects) for (const st of s.stages) for (const l of st.lessons) {
+    total += l.awakening_reaction?.exp_gain || 0;
+  }
+  return total;
+}
+function totalLessonsOf(subjects) {
+  return subjects.reduce((n, s) => n + s.stages.reduce((m, st) => m + st.lessons.length, 0), 0);
+}
+
+// 進捗への誤答記録：コンボをリセットし、復習キューへ入れる
+function applyWrong(state, lessonId) {
+  state.combo = 0;
+  state.weak[lessonId] = true;
+}
+// 進捗への正解記録：初回クリア時のみEXP加算。一発正解（そのセッションで誤答0）なら復習キューから外す
+function applyClear(state, lesson, wrongAttempts) {
+  let expAdded = 0;
+  if (!state.cleared[lesson.lesson_id]) {
+    expAdded = lesson.awakening_reaction?.exp_gain || 0;
+    state.exp += expAdded;
+  }
+  state.cleared[lesson.lesson_id] = true;
+  state.combo = (state.combo || 0) + 1;
+  if (state.combo > (state.bestCombo || 0)) state.bestCombo = state.combo;
+  let removedWeak = false;
+  if (wrongAttempts === 0 && state.weak[lesson.lesson_id]) {
+    delete state.weak[lesson.lesson_id];
+    removedWeak = true;
+  }
+  return { expAdded, removedWeak };
+}
+
+// 表示用数式整形（データ本文は改変せず、表示側で教科書表記に寄せる）
+// 対応：√(...)・√x の根号（上線つき）、a^b・a^{...} の上付き、a_b・a_{...} の下付き、n/d の分数（横棒）
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function fmtMath(text) {
+  let t = escapeHtml(text == null ? "" : text);
+  // 根号：√( ... ) は対応する閉じ括弧まで、√x は直後の1トークンを上線対象にする
+  t = t.replace(/√\(([^()]*(?:\([^()]*\))?[^()]*)\)/g, '√<span class="rad-body">$1</span>');
+  t = t.replace(/√([0-9a-zA-Zθπ∞])/g, '√<span class="rad-body">$1</span>');
+  // 分数：単純な token/token のみ（日付や語句のスラッシュは対象外に寄せる）
+  t = t.replace(/(\d+)\/(\d+)/g, '<span class="frac"><span class="frac-num">$1</span><span class="frac-den">$2</span></span>');
+  t = t.replace(/\(([a-zA-Z0-9]+)\)\/\(([a-zA-Z0-9]+)\)/g, '<span class="frac"><span class="frac-num">$1</span><span class="frac-den">$2</span></span>');
+  // 上付き・下付き
+  t = t.replace(/\^\{([^}]*)\}/g, "<sup>$1</sup>");
+  t = t.replace(/\^([0-9a-zA-Z+\-∞])/g, "<sup>$1</sup>");
+  t = t.replace(/_\{([^}]*)\}/g, "<sub>$1</sub>");
+  t = t.replace(/_([0-9a-zA-Z])/g, "<sub>$1</sub>");
+  return t;
+}
+
+return {
+  normalizeText, usableKeywords, freeNeed, matchTrapByText, judgeFreeText,
+  findChoice, matchTrapByChoice, judgeChoice, matchesCourse,
+  deviationFromExp, rankLabel, totalExpOf, totalLessonsOf,
+  applyWrong, applyClear, fmtMath, escapeHtml,
+};
+})();
+/* === LOGIC END === */
+</script>
+<script>
+"use strict";
+const L = KohaiLogic;
+const TOTAL_EXP = L.totalExpOf(SUBJECTS);
+const TOTAL_LESSONS = L.totalLessonsOf(SUBJECTS);
+const SUBJECT_ORDER = SUBJECTS.map((s) => s.subject_id);
+const SUBJECT_NAME = {};
+const LESSON_INDEX = new Map(); // lesson_id -> {subject, stage, lesson}
+for (const s of SUBJECTS) {
+  SUBJECT_NAME[s.subject_id] = s.subject_name;
+  for (const st of s.stages) for (const les of st.lessons) {
+    LESSON_INDEX.set(les.lesson_id, { subject: s, stage: st, lesson: les });
+  }
+}
+const SUBJ_COLOR = { english: "#4f46e5", math: "#2563eb", japanese: "#e11d48", science: "#059669", social: "#d97706" };
+const COURSES = [
+  { id: "all", label: "すべて" },
+  { id: "junior", label: "高校受験・基礎" },
+  { id: "bunkei", label: "大学受験・文系" },
+  { id: "rikei", label: "大学受験・理系" },
+];
+
+/* ---------- 進捗の保存 ---------- */
+const PROGRESS_KEY = "kohai.progress.v1";
+const MUTED_KEY = "kohai.muted.v1";
+let prog = { cleared: {}, weak: {}, exp: 0, combo: 0, bestCombo: 0 };
+try {
+  const raw = localStorage.getItem(PROGRESS_KEY);
+  if (raw) prog = Object.assign(prog, JSON.parse(raw));
+} catch (e) { /* 壊れた保存データは初期化して続行 */ }
+let muted = false;
+try { muted = localStorage.getItem(MUTED_KEY) === "1"; } catch (e) {}
+function saveProgress() {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(prog)); } catch (e) {}
+}
+function deviation() { return L.deviationFromExp(prog.exp, TOTAL_EXP); }
+function clearedCount() { return Object.keys(prog.cleared).length; }
+function weakCount() { return Object.keys(prog.weak).length; }
+
+/* ---------- 効果音（Web Audio・三角波・1.3kHz帯） ---------- */
+let actx = null;
+function tone(freq, delay, dur, vol) {
+  if (muted) return;
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    const t0 = actx.currentTime + (delay || 0);
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = "triangle"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol || 0.5, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  } catch (e) { /* 音が出なくてもアプリは完結する */ }
+}
+const SFX = {
+  tap() { tone(1319, 0, 0.07, 0.35); },
+  boke() { tone(659, 0, 0.12, 0.4); tone(494, 0.1, 0.16, 0.4); tone(330, 0.22, 0.22, 0.35); },
+  correct() { [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, i * 0.075, 0.22, 0.5)); },
+  fanfare() {
+    [784, 1047, 1319, 1568].forEach((f, i) => tone(f, i * 0.09, 0.24, 0.5));
+    [2093, 2637].forEach((f, i) => tone(f, 0.4 + i * 0.09, 0.34, 0.42));
+  },
+};
+function refreshSoundToggles() {
+  for (const id of ["sound-toggle-title", "sound-toggle-map"]) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = muted ? "音：オフ" : "音：オン";
+  }
+}
+function toggleMute() {
+  muted = !muted;
+  try { localStorage.setItem(MUTED_KEY, muted ? "1" : "0"); } catch (e) {}
+  refreshSoundToggles();
+  if (!muted) SFX.tap();
+}
+
+/* ---------- 後輩アバター（SVG・表情差分） ---------- */
+function renderAvatar(mood, dev) {
+  const glasses = dev >= 50 && ["normal", "question_marks", "confident_wrong", "sparkle_eyes", "super_awakened"].includes(mood);
+  let eyes = "", mouth = "", extra = "";
+  const star = (cx, cy, r) => {
+    let pts = "";
+    for (let i = 0; i < 10; i++) {
+      const ang = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 === 0 ? r : r * 0.45;
+      pts += `${(cx + rad * Math.cos(ang)).toFixed(1)},${(cy + rad * Math.sin(ang)).toFixed(1)} `;
+    }
+    return `<polygon points="${pts}" fill="#f59e0b" stroke="#b45309" stroke-width="2"/>`;
+  };
+  switch (mood) {
+    case "dizzy":
+      eyes = `<g stroke="#262036" stroke-width="5" stroke-linecap="round">
+        <path d="M62 82 l22 22 M84 82 l-22 22"/><path d="M116 82 l22 22 M138 82 l-22 22"/></g>`;
+      mouth = `<path d="M78 148 q8 -8 16 0 q8 8 16 0 q8 -8 12 0" fill="none" stroke="#262036" stroke-width="5" stroke-linecap="round"/>`;
+      extra = `<path d="M30 40 q10 -12 22 -6 M148 30 q14 -6 22 6" stroke="#60a5fa" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      break;
+    case "crying_laugh":
+      eyes = `<g stroke="#262036" stroke-width="5.5" fill="none" stroke-linecap="round">
+        <path d="M58 96 l24 -12 l-24 -12"/><path d="M142 96 l-24 -12 l24 -12"/></g>`;
+      mouth = `<ellipse cx="100" cy="146" rx="17" ry="13" fill="#7f1d1d"/><path d="M86 152 q14 8 28 0" stroke="#fda4af" stroke-width="4" fill="none"/>`;
+      extra = `<path d="M38 108 q-8 14 0 22 q8 -8 0 -22 M162 108 q8 14 0 22 q-8 -8 0 -22" fill="#60a5fa"/>`;
+      break;
+    case "question_marks":
+      eyes = `<circle cx="73" cy="94" r="7.5" fill="#262036"/><circle cx="127" cy="94" r="7.5" fill="#262036"/>
+        <path d="M58 74 q14 -8 28 -2" stroke="#262036" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M114 70 q14 -4 26 4" stroke="#262036" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      mouth = `<circle cx="100" cy="146" r="7" fill="none" stroke="#262036" stroke-width="5"/>`;
+      extra = `<text x="152" y="52" font-size="34" font-weight="900" fill="#7c3aed">?</text><text x="22" y="66" font-size="24" font-weight="900" fill="#7c3aed">?</text>`;
+      break;
+    case "confident_wrong":
+      eyes = `<circle cx="73" cy="97" r="7" fill="#262036"/><circle cx="127" cy="97" r="7" fill="#262036"/>
+        <path d="M56 88 h34 M110 88 h34" stroke="#262036" stroke-width="6" stroke-linecap="round"/>`;
+      mouth = `<path d="M82 148 q20 4 34 -8" fill="none" stroke="#262036" stroke-width="5" stroke-linecap="round"/>`;
+      extra = `<path d="M150 130 q10 10 2 20 q-10 -8 -2 -20" fill="#60a5fa"/>`;
+      break;
+    case "sparkle_eyes":
+      eyes = star(73, 94, 15) + star(127, 94, 15);
+      mouth = `<path d="M76 138 q24 22 48 0 q-6 20 -24 20 q-18 0 -24 -20" fill="#7f1d1d"/>`;
+      extra = `<path d="M28 44 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#f5c542"/><path d="M164 60 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#f5c542"/>`;
+      break;
+    case "super_awakened":
+      eyes = star(73, 94, 17) + star(127, 94, 17);
+      mouth = `<path d="M72 136 q28 26 56 0 q-8 24 -28 24 q-20 0 -28 -24" fill="#7f1d1d"/><path d="M84 152 q16 8 32 0" stroke="#fda4af" stroke-width="4" fill="none"/>`;
+      extra = `<circle cx="100" cy="104" r="88" fill="none" stroke="#f5c542" stroke-width="4" stroke-dasharray="10 8" opacity=".85"/>
+        <path d="M22 34 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#f5c542"/>
+        <path d="M170 40 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#f5c542"/>
+        <path d="M176 128 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#f5c542"/>`;
+      break;
+    case "tears_of_joy":
+      eyes = `<g stroke="#262036" stroke-width="5.5" fill="none" stroke-linecap="round">
+        <path d="M56 98 q17 -16 34 0"/><path d="M110 98 q17 -16 34 0"/></g>`;
+      mouth = `<path d="M74 136 q26 24 52 0 q-8 22 -26 22 q-18 0 -26 -22" fill="#7f1d1d"/>`;
+      extra = `<path d="M36 104 q-9 15 0 24 q9 -9 0 -24 M164 104 q9 15 0 24 q-9 -9 0 -24" fill="#60a5fa"/>`;
+      break;
+    default: // normal
+      eyes = `<circle cx="73" cy="94" r="7.5" fill="#262036"/><circle cx="127" cy="94" r="7.5" fill="#262036"/>
+        <path d="M58 76 q14 -7 28 -1 M114 75 q14 -6 28 1" stroke="#262036" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      mouth = `<path d="M80 140 q20 14 40 0" fill="none" stroke="#262036" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  const glassesSvg = glasses ? `<g fill="rgba(255,255,255,.14)" stroke="#262036" stroke-width="4.5">
+    <rect x="48" y="76" width="50" height="38" rx="12"/><rect x="102" y="76" width="50" height="38" rx="12"/>
+    <path d="M98 90 q2 -5 4 0" fill="none"/></g>` : "";
+  return `<svg viewBox="0 0 200 200" width="100%" height="100%" role="img" aria-label="後輩マナブ">
+    <circle cx="100" cy="104" r="86" fill="#ffe3c2"/>
+    <path d="M14 100 a86 86 0 0 1 172 0 l0 -14 q-30 14 -52 2 q-8 12 -26 10 q-40 8 -66 -8 q-16 8 -28 -4 z" fill="#3b2f4a"/>
+    <circle cx="40" cy="118" r="11" fill="#ffb59d" opacity=".8"/><circle cx="160" cy="118" r="11" fill="#ffb59d" opacity=".8"/>
+    ${eyes}${mouth}${glassesSvg}${extra}
+  </svg>`;
+}
+
+/* ---------- 紙吹雪（自前実装） ---------- */
+const confetti = (() => {
+  const cv = document.getElementById("confetti-canvas");
+  const ctx = cv.getContext("2d");
+  let parts = [], raf = null;
+  const COLORS = ["#f5c542", "#e8a33d", "#4f46e5", "#7c3aed", "#e11d48", "#059669", "#2563eb"];
+  function resize() { cv.width = innerWidth; cv.height = innerHeight; }
+  addEventListener("resize", resize); resize();
+  function tick() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter((p) => p.y < cv.height + 24 && p.life > 0);
+    for (const p of parts) {
+      p.vy += 0.14; p.x += p.vx + Math.sin(p.t / 9 + p.seed) * 1.4; p.y += p.vy; p.rot += p.vr; p.t++; p.life--;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, p.life / 40);
+      if (p.circle) { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, 7); ctx.fill(); }
+      else ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.66);
+      ctx.restore();
+    }
+    if (parts.length) raf = requestAnimationFrame(tick);
+    else { raf = null; ctx.clearRect(0, 0, cv.width, cv.height); }
+  }
+  return function spawn(n) {
+    for (let i = 0; i < (n || 120); i++) {
+      parts.push({
+        x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.35,
+        vx: (Math.random() - 0.5) * 2.4, vy: 1 + Math.random() * 2.4,
+        size: 7 + Math.random() * 8, rot: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.25,
+        color: COLORS[i % COLORS.length], circle: Math.random() < 0.3,
+        t: 0, seed: Math.random() * 10, life: 180 + Math.random() * 80,
+      });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+})();
+function flashFx() {
+  const f = document.getElementById("fx-flash");
+  f.classList.remove("on"); void f.offsetWidth; f.classList.add("on");
+}
+function stampFx(text) {
+  const s = document.getElementById("fx-stamp");
+  s.textContent = text;
+  s.classList.remove("on"); void s.offsetWidth; s.classList.add("on");
+}
+function runAwakenEffect(effectType) {
+  if (effectType === "confetti_storm") { confetti(170); stampFx("覚醒！"); SFX.fanfare(); }
+  else if (effectType === "level_up_flash") { flashFx(); stampFx("レベルアップ！"); confetti(70); SFX.fanfare(); }
+  else { flashFx(); confetti(60); SFX.correct(); } // aura_burst
+}
+
+/* ---------- 画面遷移 ---------- */
+const SCREENS = ["title", "map", "intro", "gym", "result", "review"];
+let reviewReturn = "map";
+function show(name) {
+  for (const s of SCREENS) document.getElementById("screen-" + s).classList.toggle("active", s === name);
+  window.scrollTo(0, 0);
+  const active = document.querySelector(".screen.active .stages, .screen.active #dialogue-feed");
+  if (active) active.scrollTop = 0;
+}
+
+/* ---------- 共通ステータス描画 ---------- */
+function refreshTitle() {
+  document.getElementById("title-avatar").innerHTML = renderAvatar(clearedCount() > 0 ? "sparkle_eyes" : "normal", deviation());
+  document.getElementById("title-dev").textContent = deviation();
+  document.getElementById("title-cleared").textContent = clearedCount();
+  document.getElementById("title-rank").textContent = L.rankLabel(deviation());
+  document.getElementById("title-weak").textContent = weakCount();
+}
+function refreshMapStats() {
+  document.getElementById("map-avatar").innerHTML = renderAvatar(clearedCount() > 0 ? "sparkle_eyes" : "normal", deviation());
+  document.getElementById("map-dev").textContent = deviation();
+  document.getElementById("map-rank").textContent = L.rankLabel(deviation());
+  document.getElementById("map-cleared").textContent = clearedCount();
+  document.getElementById("map-combo").textContent = prog.combo;
+  document.getElementById("map-best").textContent = prog.bestCombo;
+  document.getElementById("map-weak").textContent = weakCount();
+  document.getElementById("map-progress").style.width = (clearedCount() / TOTAL_LESSONS * 100) + "%";
+}
+
+/* ---------- マップ ---------- */
+const ui = { subject: "english", course: "all" };
+function renderTabs() {
+  const box = document.getElementById("subj-tabs");
+  box.innerHTML = "";
+  for (const s of SUBJECTS) {
+    const total = s.stages.reduce((n, st) => n + st.lessons.length, 0);
+    const done = s.stages.reduce((n, st) => n + st.lessons.filter((l) => prog.cleared[l.lesson_id]).length, 0);
+    const b = document.createElement("button");
+    b.className = "subj-tab" + (ui.subject === s.subject_id ? " active" : "");
+    b.dataset.subj = s.subject_id;
+    b.innerHTML = `${s.subject_name}<small>${done}/${total} 覚醒</small>`;
+    b.onclick = () => { SFX.tap(); ui.subject = s.subject_id; renderMap(); };
+    box.appendChild(b);
+  }
+}
+function renderCourseBar() {
+  const box = document.getElementById("course-bar");
+  box.querySelectorAll(".course-chip").forEach((el) => el.remove());
+  const subj = SUBJECTS.find((s) => s.subject_id === ui.subject);
+  for (const c of COURSES) {
+    const n = subj.stages.filter((st) => L.matchesCourse(st, c.id)).length;
+    const b = document.createElement("button");
+    b.className = "course-chip" + (ui.course === c.id ? " active" : "");
+    b.textContent = `${c.label}（${n}）`;
+    b.onclick = () => { SFX.tap(); ui.course = c.id; renderMap(); };
+    box.appendChild(b);
+  }
+}
+function renderStages() {
+  const grid = document.getElementById("stages-grid");
+  grid.innerHTML = "";
+  const subj = SUBJECTS.find((s) => s.subject_id === ui.subject);
+  const stages = subj.stages.filter((st) => L.matchesCourse(st, ui.course));
+  if (!stages.length) {
+    grid.innerHTML = `<div class="empty-note">このコースのステージはありません。<br>別のコースを選んでみてください。</div>`;
+    return;
+  }
+  for (const st of stages) {
+    const done = st.lessons.filter((l) => prog.cleared[l.lesson_id]).length;
+    const all = done === st.lessons.length;
+    const card = document.createElement("button");
+    card.className = "stage-card";
+    card.dataset.subj = st.subject_id;
+    card.innerHTML = `
+      <span class="st-head"><span class="st-id">${st.stage_id}</span>
+      ${all ? '<span class="st-clear">全レッスン覚醒！</span>' : ""}
+      <span class="st-level">${L.escapeHtml(st.target_level)}</span></span>
+      <span class="st-title">${L.escapeHtml(st.stage_title)}</span>
+      <span class="st-kohai">マナブ：${L.escapeHtml(st.kohai_profile.initial_iq_label)}</span>
+      <span class="st-prog"><span class="progress-track"><span class="progress-fill" style="display:block;width:${done / st.lessons.length * 100}%"></span></span>
+      <span class="st-count">${done}/${st.lessons.length} 覚醒</span></span>`;
+    card.onclick = () => { SFX.tap(); openIntro(subj, st); };
+    grid.appendChild(card);
+  }
+}
+function renderMap() { refreshMapStats(); renderTabs(); renderCourseBar(); renderStages(); }
+
+/* ---------- ステージ紹介 ---------- */
+let introCtx = null;
+function openIntro(subject, stage) {
+  introCtx = { subject, stage };
+  document.getElementById("intro-crumb").textContent = `${subject.subject_name} ${stage.stage_id}`;
+  document.getElementById("intro-level").textContent = `${subject.subject_name} ／ ${stage.target_level} ／ 全${stage.lessons.length}レッスン`;
+  document.getElementById("intro-title").textContent = stage.stage_title;
+  document.getElementById("intro-avatar").innerHTML = renderAvatar("normal", deviation());
+  document.getElementById("intro-kohai-name").textContent = "後輩：" + stage.kohai_profile.name;
+  document.getElementById("intro-kohai-label").textContent = stage.kohai_profile.initial_iq_label;
+  document.getElementById("intro-kohai-person").textContent = stage.kohai_profile.personality;
+  document.getElementById("intro-boke").textContent = "「" + stage.kohai_profile.opening_boke + "」";
+  const ul = document.getElementById("intro-objectives");
+  ul.innerHTML = "";
+  for (const o of stage.learning_objectives || []) {
+    const li = document.createElement("li");
+    li.textContent = o;
+    ul.appendChild(li);
+  }
+  show("intro");
+}
+
+/* ---------- ジム（セッション） ---------- */
+let session = null;
+function startStage(subject, stage) {
+  session = {
+    mode: "stage", subject, stage,
+    queue: stage.lessons.slice(), idx: 0,
+    wrongAttempts: 0, solvedCount: 0, expGained: 0, gaveUpCount: 0,
+  };
+  show("gym");
+  loadLesson();
+}
+function startReviewLesson(lessonId) {
+  const hit = LESSON_INDEX.get(lessonId);
+  if (!hit) return;
+  session = {
+    mode: "review", subject: hit.subject, stage: hit.stage,
+    queue: [hit.lesson], idx: 0,
+    wrongAttempts: 0, solvedCount: 0, expGained: 0, gaveUpCount: 0,
+  };
+  show("gym");
+  loadLesson();
+}
+function currentLesson() { return session.queue[session.idx]; }
+
+function addMsg(cls, who, html) {
+  const feed = document.getElementById("dialogue-feed");
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  d.innerHTML = `<span class="msg-who">${who}</span>${html}`;
+  feed.appendChild(d);
+  feed.scrollTop = feed.scrollHeight;
+  return d;
+}
+function setAvatar(mood, aura) {
+  const box = document.getElementById("gym-avatar");
+  box.innerHTML = renderAvatar(mood, deviation());
+  box.classList.toggle("aura", !!aura);
+  box.style.position = "relative";
+}
+function loadLesson() {
+  const les = currentLesson();
+  session.wrongAttempts = 0;
+  session.solved = false;
+  session.gaveUp = false;
+  document.getElementById("gym-stage-badge").textContent = session.stage.stage_id + " ・ " + SUBJECT_NAME[session.subject.subject_id];
+  document.getElementById("gym-topic").textContent = les.topic_tag;
+  document.getElementById("gym-count").textContent = `${session.idx + 1} / ${session.queue.length}`;
+  document.getElementById("gym-progress").style.width = (session.idx / session.queue.length * 100) + "%";
+  document.getElementById("gym-rank").textContent = L.rankLabel(deviation());
+  document.getElementById("gym-state").textContent = session.stage.kohai_profile.initial_iq_label;
+  document.getElementById("question-text").innerHTML = L.fmtMath(les.kohai_question);
+  document.getElementById("summary-slot").innerHTML = "";
+  document.getElementById("next-row").style.display = "none";
+  document.getElementById("question-box").style.display = "";
+  const feed = document.getElementById("dialogue-feed");
+  feed.innerHTML = "";
+  setAvatar("normal", false);
+  addMsg("kohai", "マナブ", L.fmtMath(les.kohai_initial_boke));
+  renderInput(les);
+  feed.scrollTop = 0;
+}
+function renderInput(les) {
+  const area = document.getElementById("input-area");
+  area.innerHTML = "";
+  area.style.display = "";
+  if (les.teach_mode === "free_explain") {
+    const ta = document.createElement("textarea");
+    ta.id = "free-input";
+    ta.placeholder = "先輩として、マナブに分かりやすく教えてあげよう！";
+    ta.setAttribute("aria-label", "マナブへの教え方を入力");
+    area.appendChild(ta);
+    const row = document.createElement("div");
+    row.className = "free-row";
+    const send = document.createElement("button");
+    send.className = "btn gold";
+    send.textContent = "教える！";
+    send.onclick = () => submitFree();
+    row.appendChild(send);
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      const mic = document.createElement("button");
+      mic.className = "mic-btn";
+      mic.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#262036" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3" fill="#262036" stroke="none"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+      mic.setAttribute("aria-label", "音声入力");
+      mic.onclick = () => startVoice(mic, ta);
+      row.appendChild(mic);
+    }
+    area.appendChild(row);
+  } else {
+    const box = document.createElement("div");
+    box.className = "choices";
+    for (const c of les.choices || []) {
+      const b = document.createElement("button");
+      b.className = "choice-btn";
+      b.dataset.choiceId = c.id;
+      b.innerHTML = `<span class="ch-id">${L.escapeHtml(c.id)}</span>${L.fmtMath(c.label)}`;
+      b.onclick = () => submitChoice(les, c, b);
+      box.appendChild(b);
+    }
+    area.appendChild(box);
+  }
+  maybeShowGiveUp(les);
+}
+function maybeShowGiveUp(les) {
+  if (session.solved || session.gaveUp) return;
+  if (session.wrongAttempts < 2) return;
+  const area = document.getElementById("input-area");
+  if (area.querySelector(".giveup-row")) return;
+  const row = document.createElement("div");
+  row.className = "giveup-row";
+  const b = document.createElement("button");
+  b.className = "linklike";
+  b.textContent = "どうしても分からなければ、答えを見る（このレッスンは復習に残ります）";
+  b.onclick = () => giveUp(les);
+  row.appendChild(b);
+  area.appendChild(row);
+}
+function startVoice(btn, ta) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  try {
+    const rec = new SR();
+    rec.lang = "ja-JP";
+    rec.interimResults = false;
+    btn.classList.add("rec");
+    rec.onresult = (ev) => {
+      const text = ev.results[0][0].transcript || "";
+      ta.value = (ta.value ? ta.value + "\n" : "") + text;
+    };
+    rec.onend = () => btn.classList.remove("rec");
+    rec.onerror = () => btn.classList.remove("rec");
+    rec.start();
+  } catch (e) { btn.classList.remove("rec"); }
+}
+function afterWrong(les, verdict) {
+  L.applyWrong(prog, les.lesson_id);
+  session.wrongAttempts++;
+  saveProgress();
+  document.getElementById("gym-rank").textContent = L.rankLabel(deviation());
+  const card = document.getElementById("gym-card");
+  card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+  SFX.boke();
+  if (verdict.result === "trap" && verdict.trap) {
+    setAvatar(verdict.trap.kohai_emotion || "question_marks", false);
+    addMsg("confused", "マナブ（まだ分かってない）", L.fmtMath(verdict.trap.kohai_confused_line));
+  } else {
+    setAvatar("question_marks", false);
+    const hint = (les.teaching_rubric.required_concepts || [])[0] || "";
+    addMsg("confused", "マナブ（まだ分かってない）",
+      L.fmtMath(`うーん、先輩！もう少し噛み砕いて教えてもらえますか？（ヒント：${hint}）`));
+  }
+  maybeShowGiveUp(les);
+}
+function submitFree() {
+  if (!session || session.solved || session.gaveUp) return;
+  const les = currentLesson();
+  const ta = document.getElementById("free-input");
+  const text = (ta.value || "").trim();
+  if (!text) { ta.focus(); return; }
+  addMsg("senpai", "先輩（キミ）", L.fmtMath(text));
+  const verdict = L.judgeFreeText(les, text);
+  if (verdict.result === "correct") awaken(les);
+  else afterWrong(les, verdict);
+}
+function submitChoice(les, choice, btn) {
+  if (!session || session.solved || session.gaveUp) return;
+  addMsg("senpai", "先輩（キミ）", L.fmtMath(choice.label));
+  const verdict = L.judgeChoice(les, choice.id);
+  if (verdict.result === "correct") awaken(les);
+  else {
+    btn.disabled = true;
+    btn.style.opacity = ".45";
+    afterWrong(les, verdict);
+  }
+}
+function showSummary(les) {
+  const slot = document.getElementById("summary-slot");
+  slot.innerHTML = `
+    <div class="summary-card">
+      <div class="sum-head">${L.fmtMath(les.summary_card.headline)}</div>
+      <div class="sum-label">鉄則</div>
+      <div class="sum-text">${L.fmtMath(les.summary_card.core_rule)}</div>
+      <div class="sum-label">入試の落とし穴</div>
+      <div class="sum-text sum-trap">${L.fmtMath(les.summary_card.exam_trap_warning)}</div>
+    </div>`;
+}
+function finishLessonUI(lastLabel) {
+  document.getElementById("input-area").style.display = "none";
+  const row = document.getElementById("next-row");
+  row.style.display = "";
+  document.getElementById("btn-next-lesson").textContent = lastLabel;
+  document.getElementById("gym-progress").style.width = ((session.idx + 1) / session.queue.length * 100) + "%";
+  document.getElementById("dialogue-feed").scrollTop = document.getElementById("dialogue-feed").scrollHeight;
+}
+function awaken(les) {
+  session.solved = true;
+  const res = L.applyClear(prog, les, session.wrongAttempts);
+  session.solvedCount++;
+  session.expGained += res.expAdded;
+  saveProgress();
+  runAwakenEffect(les.awakening_reaction.effect_type);
+  setAvatar(les.awakening_reaction.kohai_emotion || "sparkle_eyes", les.awakening_reaction.effect_type === "aura_burst");
+  addMsg("awaken", "マナブ（覚醒！）",
+    L.fmtMath(les.awakening_reaction.praise_line + "\n\n【覚醒実演】" + les.awakening_reaction.kohai_solved_demo));
+  document.getElementById("gym-rank").textContent = L.rankLabel(deviation());
+  showSummary(les);
+  const last = session.idx + 1 >= session.queue.length;
+  finishLessonUI(last ? "結果を見る →" : "次のレッスンへ →");
+}
+function giveUp(les) {
+  if (session.solved || session.gaveUp) return;
+  session.gaveUp = true;
+  session.gaveUpCount++;
+  L.applyWrong(prog, les.lesson_id);
+  saveProgress();
+  SFX.tap();
+  setAvatar("dizzy", false);
+  addMsg("memo", "先輩メモ（正しい教え方）", L.fmtMath(les.teaching_rubric.canonical_explanation));
+  showSummary(les);
+  const last = session.idx + 1 >= session.queue.length;
+  finishLessonUI(last ? "結果を見る →" : "次のレッスンへ →");
+}
+function nextLesson() {
+  SFX.tap();
+  setAvatar("normal", false);
+  if (session.idx + 1 < session.queue.length) {
+    session.idx++;
+    loadLesson();
+  } else {
+    showResult();
+  }
+}
+function showResult() {
+  const dev = deviation();
+  document.getElementById("result-dev").textContent = dev;
+  document.getElementById("result-rank").textContent = L.rankLabel(dev);
+  const list = document.getElementById("result-list");
+  const rows = [];
+  if (session.mode === "stage") {
+    rows.push(["ステージ", `${session.stage.stage_id} ${session.stage.stage_title}`]);
+    rows.push(["覚醒させたレッスン", `${session.solvedCount} / ${session.queue.length}`]);
+  } else {
+    rows.push(["復習レッスン", currentLesson().topic_tag]);
+    rows.push(["結果", session.solved ? (session.wrongAttempts === 0 ? "一発覚醒！リストから卒業" : "覚醒！（リストには残ります）") : "また今度リベンジ"]);
+  }
+  rows.push(["獲得EXP", `+${session.expGained}`]);
+  rows.push(["覚醒済み（累計）", `${clearedCount()} / ${TOTAL_LESSONS}`]);
+  rows.push(["最高コンボ", `${prog.bestCombo}`]);
+  list.innerHTML = rows.map(([k, v]) => `<div class="result-item"><span>${L.escapeHtml(k)}</span><span>${L.escapeHtml(v)}</span></div>`).join("");
+  document.getElementById("result-weak").textContent = weakCount();
+  show("result");
+}
+
+/* ---------- 復習リクエスト ---------- */
+function renderReview() {
+  const box = document.getElementById("review-list");
+  box.innerHTML = "";
+  const ids = Object.keys(prog.weak);
+  if (!ids.length) {
+    box.innerHTML = `<div class="empty-note">復習リクエストは空っぽです。<br>マナブ、絶好調！</div>`;
+    return;
+  }
+  for (const id of ids) {
+    const hit = LESSON_INDEX.get(id);
+    if (!hit) continue;
+    const { subject, stage, lesson } = hit;
+    const item = document.createElement("div");
+    item.className = "review-item";
+    item.style.borderLeftColor = SUBJ_COLOR[subject.subject_id];
+    item.innerHTML = `
+      <div class="rv-main">
+        <div class="rv-topic">${L.escapeHtml(lesson.topic_tag)}${prog.cleared[id] ? "（覚醒済み・仕上げ待ち）" : ""}</div>
+        <div class="rv-meta">${subject.subject_name} ／ ${stage.stage_id} ${L.escapeHtml(stage.stage_title)}<br>弱点：${L.escapeHtml(lesson.weakness_category)}</div>
+      </div>`;
+    const b = document.createElement("button");
+    b.className = "btn gold";
+    b.textContent = "再挑戦";
+    b.onclick = () => { SFX.tap(); startReviewLesson(id); };
+    item.appendChild(b);
+    box.appendChild(item);
+  }
+}
+
+/* ---------- 画面遷移ボタン ---------- */
+document.getElementById("btn-to-map").onclick = () => { SFX.tap(); renderMap(); show("map"); };
+document.getElementById("btn-to-review").onclick = () => { SFX.tap(); reviewReturn = "title"; renderReview(); show("review"); };
+document.getElementById("btn-back-title").onclick = () => { SFX.tap(); refreshTitle(); show("title"); };
+document.getElementById("btn-back-map").onclick = () => { SFX.tap(); renderMap(); show("map"); };
+document.getElementById("btn-start-stage").onclick = () => { SFX.fanfare(); if (introCtx) startStage(introCtx.subject, introCtx.stage); };
+document.getElementById("btn-intro-review").onclick = () => { SFX.tap(); reviewReturn = "intro"; renderReview(); show("review"); };
+document.getElementById("btn-quit-gym").onclick = () => { SFX.tap(); renderMap(); show("map"); };
+document.getElementById("btn-next-lesson").onclick = () => nextLesson();
+document.getElementById("btn-result-map").onclick = () => { SFX.tap(); renderMap(); show("map"); };
+document.getElementById("btn-result-review").onclick = () => { SFX.tap(); reviewReturn = "map"; renderReview(); show("review"); };
+document.getElementById("btn-review-back").onclick = () => {
+  SFX.tap();
+  if (reviewReturn === "title") { refreshTitle(); show("title"); }
+  else if (reviewReturn === "intro" && introCtx) show("intro");
+  else { renderMap(); show("map"); }
+};
+document.getElementById("sound-toggle-title").onclick = toggleMute;
+document.getElementById("sound-toggle-map").onclick = toggleMute;
+document.getElementById("btn-update").onclick = () => {
+  const u = new URL(location.href);
+  u.searchParams.set("v", "1.0.0-" + Date.now());
+  location.href = u.toString();
+};
+
+refreshSoundToggles();
+refreshTitle();
+show("title");
+</script>
+</body>
+</html>
